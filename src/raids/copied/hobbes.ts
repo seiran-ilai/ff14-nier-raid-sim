@@ -1,7 +1,7 @@
 /*
  * 尼爾 1 複製工廠廢墟・第二王：霍布斯
  * A／B／C 三隊被分到三個平臺（各自有地板機關），北邊是會旋轉切換機關的牆。模擬器只模擬「你那一隊」的平臺，
- * 其他兩隊不在畫面上（Entity.away）。資料：灰機 wiki（機制）＋ 新大陸異聞錄（處理方式：所有人在場地右前方集合）。
+ * 其他兩隊不在畫面上（Entity.away）。資料：灰機 wiki（機制）＋ 新大陸見聞錄（處理方式：所有人在場地右前方集合）。
  * 平臺大小、詠唱秒數、AOE 大小、時間軸順序全部是估計（T）。
  */
 import { ROLES, type Alliance, type Role, type Vec } from '../../core/constants';
@@ -34,7 +34,7 @@ const T = {
   missile: { cast: 4.5, r: 6, spot: 10 },
 };
 
-/** 原位：所有人在場地右前方（東北）集合（新大陸異聞錄） */
+/** 原位：所有人在場地右前方（東北）集合（新大陸見聞錄） */
 const GATHER: Vec = { x: 8, y: -8 };
 function home(_al: Alliance, role: Role): Vec {
   const i = ROLES.indexOf(role);
