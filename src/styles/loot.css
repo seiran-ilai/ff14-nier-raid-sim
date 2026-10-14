@@ -1,0 +1,19 @@
+/* 掉落物頁 */
+.lbar{display:flex;flex-direction:column;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.lrow{display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px;align-items:center}
+.lbody{display:flex;flex-direction:column;gap:12px}
+.lsec h2{margin:0;font-family:var(--f-display);font-size:20px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.lsec h2 .muted{font-family:var(--f-body);font-weight:400}
+.lline{display:grid;grid-template-columns:180px minmax(0,1fr);gap:10px;align-items:start;padding:6px 0;border-top:1px solid var(--line)}
+.lline:first-of-type{border-top:0}
+.lboss,.lslot{font-weight:700;color:var(--gold-2);font-size:14px}
+.litems{list-style:none;margin:0;padding:0!important;display:flex;flex-wrap:wrap;gap:6px!important}
+.litems li{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:3px 9px;display:flex;flex-direction:column;line-height:1.35}
+.litems b{font-size:13.5px;font-weight:500}
+.litems small{font-size:11px;color:var(--muted)}
+.lcur{margin:0;font-size:13px;color:var(--muted)}
+.llegend summary{cursor:pointer;font-weight:700}
+.llegend dl{margin:8px 0 0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13.5px}
+.llegend dt{font-weight:700;color:var(--gold-2)}
+.llegend dd{margin:0}
+@media (max-width:720px){.lline{grid-template-columns:minmax(0,1fr)}.lrow{grid-template-columns:minmax(0,1fr)}}

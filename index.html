@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>尼爾團隊任務模擬器（測試版）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1 title="FF14 尼爾系列 24 人團隊任務：複製工廠廢墟・人偶軍事基地・希望之砲台：塔">尼爾團隊任務 <em>機制模擬器</em><span class="beta">測試版</span></h1>
+    </div>
+    <div class="ctrls">
+      <div class="grp"><span class="lbl">隊伍</span><span id="alSeg" class="grp"></span></div>
+      <div class="grp"><span class="lbl">職能</span><span id="roleSeg" class="grp"></span></div>
+      <span class="seatinfo" id="seatInfo"></span>
+      <a class="btn sm guidebtn" href="./guide.html">機制教學</a>
+      <a class="btn ghost sm" href="./loot.html">掉落物</a>
+      <button class="btn ghost sm pconly" id="toggleSides" title="收起／顯示兩側的說明欄，讓遊戲畫面變大">收起側欄</button>
+      <button class="btn ghost sm pconly" id="openHelp">? 操作</button>
+      <button class="btn ghost sm" id="openSet">設定與按鍵</button>
+    </div>
+  </header>
+
+  <p class="betanote"><b>測試版</b>各技能詠唱秒數、AOE 大小、場地尺寸多為估計值，主要用來練習順序、站位與反應；請和攻略對照（見頁尾資料來源）。</p>
+
+  <div class="drillrows">
+    <div class="drills" id="raidRow"></div>
+    <div class="drills" id="drillsMode"></div>
+    <div class="drills" id="drillsEnc"></div>
+    <div class="drills" id="drillsOne"></div>
+  </div>
+
+  <div class="main">
+    <aside class="side sl">
+      <div class="card" id="brief"></div>
+    </aside>
+    <div class="sc">
+      <div class="stage" id="stage">
+        <canvas id="cv"></canvas>
+        <div class="hud castwrap" id="castW" hidden><div class="casthead"><span class="castname"><small id="castWho"></small><span id="castN"></span></span><span class="casttime" id="castT"></span></div><div class="castbar"><i id="castF"></i></div><div class="casttip" id="castTip" hidden></div></div>
+        <div class="hud bossline" id="line" hidden><span class="who" id="lineWho"></span><span id="lineT"></span></div>
+        <div class="hud alert" id="alert" hidden></div>
+        <div class="hud status" id="status"></div>
+        <div class="hud tr" id="tr"></div>
+        <div class="hud toast" id="toast"></div>
+        <div class="hud bar" id="bar"></div>
+        <div class="overlay" id="ov"></div>
+        <div class="hud replay" id="rp" hidden><div class="rphead"><b id="rpTitle"></b><span id="rpTime"></span></div><div class="rpbar"><i id="rpFill"></i></div><div class="row"><button class="btn sm" id="rpAgain">重播</button><button class="btn ghost sm" id="rpClose">回到結算</button></div></div>
+      </div>
+    </div>
+    <aside class="side sr">
+      <div class="card tipcard" id="tipCard"></div>
+      <div class="card" id="seqCard" hidden></div>
+      <div class="card pconly">
+        <h3>紀錄</h3>
+        <div class="stats"><div class="stat"><b id="sOk">0</b><span>成功</span></div><div class="stat"><b id="sAll">0</b><span>嘗試</span></div><div class="stat"><b id="sStreak">0</b><span>連續成功</span></div></div>
+      </div>
+      <div class="card pconly" id="weak"></div>
+    </aside>
+  </div>
+
+  <footer>
+    <p id="sources">資料來源</p>
+    <ul class="src" id="srcList"><li><span>攻略資料</span><span>整理中</span></li></ul>
+    <p>各技能詠唱秒數、AOE 大小、場地尺寸多為估計值。角色腳下的黃色小圈是判定圈，碰到預兆邊緣就算被打中。</p>
+    <p>FINAL FANTASY XIV 為 SQUARE ENIX 的商標；本工具為玩家自製的非官方練習工具。</p>
+  </footer>
+</div>
+
+<div class="modal" id="help" hidden>
+  <div class="mcard" style="max-width:520px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2>操作</h2><button class="btn sm" id="closeHelp">知道了</button></div>
+    <div class="keys">
+      <kbd>W A S D</kbd><span>移動（以畫面為準，北在上）</span>
+      <kbd>滑鼠左鍵點地面</kbd><span>往那個點走過去（按 WASD 取消）</span>
+      <kbd>滑鼠右鍵按住</kbd><span>角色面向游標方向</span>
+      <kbd>Enter／空白鍵</kbd><span>開始（用上次的錯誤即停／不停）</span>
+      <kbd id="kbList">1 2 3 4</kbd><span>技能列（可在設定改按鍵與內容）</span>
+      <kbd>F</kbd><span>快轉 2 倍（空檔時用）</span>
+      <kbd>R</kbd><span>重來</span>
+      <kbd>Esc</kbd><span>暫停</span>
+      <kbd>T</kbd><span>教學示範（角色自動照正解跑）</span>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="mcard">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px"><h2>設定與按鍵</h2><button class="btn sm" id="closeSet">完成</button></div>
+    <div class="set"><span class="lbl">鏡頭</span><span class="grp" id="setCam"></span></div>
+    <div class="set"><span class="lbl">跟隨鏡頭的距離</span><span class="grp" id="setZoom"></span></div>
+    <div class="set"><span class="lbl">大遊戲畫面（說明欄移到下面）</span><span class="grp" id="setBig"></span></div>
+    <div class="set"><span class="lbl">音效</span><span class="grp" id="setSound"></span></div>
+    <div class="set"><span class="lbl">移動時自動面向移動方向</span><span class="grp" id="setAuto"></span></div>
+    <div class="set"><span class="lbl">遊戲速度</span><span class="grp" id="setSpeed"></span></div>
+    <div class="set"><span class="lbl">顯示建議位置</span><span class="grp" id="setHint"></span></div>
+    <div class="set"><span class="lbl">顯示文字提示（詠唱條下方的處理方式）</span><span class="grp" id="setText"></span></div>
+    <div class="set"><span class="lbl">每回合重置冷卻</span><span class="grp" id="setCd"></span></div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><span class="lbl">技能列（點按鍵欄再按鍵盤即可改鍵）</span><span class="row"><button class="btn ghost sm" id="addAct">新增技能</button><button class="btn ghost sm" id="resetAct">還原預設</button></span></div>
+      <div class="acth"><span>名稱</span><span>類型</span><span>按鍵／方向</span><span>距離 (m)</span><span>持續 (秒)</span><span>冷卻 (秒)</span><span></span></div>
+      <div class="acts" id="acts"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

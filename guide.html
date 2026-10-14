@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>尼爾團隊任務機制教學（測試版）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>尼爾團隊任務 <em>機制教學</em><span class="beta">測試版</span></h1>
+    </div>
+    <div class="ctrls">
+      <div class="grp"><span class="lbl">隊伍</span><span id="alSeg" class="grp"></span></div>
+      <div class="grp"><span class="lbl">職能</span><span id="roleSeg" class="grp"></span></div>
+      <span class="seatinfo" id="seatInfo"></span>
+      <a class="btn ghost sm" href="./index.html">回到模擬器</a>
+      <a class="btn ghost sm" href="./loot.html">掉落物</a>
+    </div>
+  </header>
+
+  <div class="gbar">
+    <span class="muted" id="gnote"></span>
+    <span class="grp"><span class="lbl">動態圖速度</span><span class="grp" id="gSpeed"></span></span>
+    <select class="gsel" id="gsel" aria-label="跳到機制"></select>
+  </div>
+
+  <div class="gmain">
+    <nav class="gnav" id="gnav" aria-label="機制索引"></nav>
+    <main class="gbody" id="gbody"></main>
+  </div>
+
+  <footer>
+    <p>動態圖是模擬器的教學示範（照攻略站位的 Bot 自動跑），捲到哪一段就播放哪一段；黃色「你」是上方選的座位。各技能詠唱秒數、AOE 大小、場地尺寸多為估計值。</p>
+    <p>FINAL FANTASY XIV 為 SQUARE ENIX 的商標；本工具為玩家自製的非官方練習工具。</p>
+  </footer>
+</div>
+<script type="module" src="/src/guide.ts"></script>
+</body>
+</html>

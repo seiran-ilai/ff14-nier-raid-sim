@@ -1,0 +1,66 @@
+/* 機制教學頁：一整頁往下捲；左側固定的索引（手機改成下拉選單），每個單元一段：動態圖＋說明 */
+.gbar{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;position:sticky;top:0;z-index:5;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line)}
+.gmain{display:grid;grid-template-columns:200px minmax(0,1fr);gap:18px;align-items:start}
+.gnav{display:flex;flex-direction:column;gap:12px;position:sticky;top:60px;max-height:calc(100vh - 72px);overflow:auto;padding-right:4px}
+.ggroup{display:flex;flex-direction:column;gap:2px}
+.ggroup p{margin:0 0 2px;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-2)}
+.gitem{font-size:13.5px;color:var(--fg);text-decoration:none;border:1px solid transparent;border-radius:8px;padding:4px 10px}
+.gitem:hover{background:var(--panel-2)}
+.gitem.on{background:#3a372e;border-color:var(--gold);font-weight:700}
+.gitem.dim{opacity:.5}
+.gitem:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.gsel{display:none;font:inherit;font-size:15px;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:6px 10px;margin-left:auto}
+.gbody{display:flex;flex-direction:column;gap:16px;min-width:0}
+.gphase{margin:10px 0 0;font-family:var(--f-display);font-size:24px;color:var(--gold)}
+.gsec{scroll-margin-top:64px}
+.gsec.playing{border-color:rgba(218,212,187,.55)}
+.ghead{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.ghead h2{margin:0;font-family:var(--f-display);font-size:21px}
+.gwhy{color:var(--gold-2)}
+.gcols{display:grid;grid-template-columns:minmax(0,480px) minmax(0,1fr);gap:16px;align-items:start}
+.gplayer{display:flex;flex-direction:column;gap:8px}
+/*
+ * 動態圖：畫面 4:5（比場地高）。鏡頭以寬度決定比例尺，所以場地上方（王的北邊）約 28%、下方約 11% 是空白，
+ * 詠唱／讀條／處理方式放上方空白、王台詞／提示放下方空白，不蓋到場地。
+ */
+.gstage{position:relative;width:100%;aspect-ratio:4/5;background:#0c0b09;cursor:pointer;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.gtop{position:absolute;top:0;left:0;right:0;height:26%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start;overflow:hidden;padding:10px 12px;pointer-events:none;text-shadow:0 1px 3px #000,0 0 6px #000}
+.gbot{position:absolute;bottom:0;left:0;right:0;height:10%;overflow:hidden;padding:4px 12px;display:flex;align-items:center;justify-content:center;text-align:center;pointer-events:none;text-shadow:0 1px 3px #000,0 0 6px #000}
+.gstage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.gidle{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;background:#0c0b09}
+.gsec.playing .gidle{display:none}
+.gcap{display:flex;flex-direction:column;gap:3px;min-width:0}
+.gcast{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.gcast b{font-size:17px;font-weight:900;color:#fff}
+.gcast span{font-size:14px;font-weight:700;color:var(--gold-2);font-variant-numeric:tabular-nums}
+.gprog{display:block;height:8px;border-radius:2px;background:rgba(0,0,0,.6);border:1px solid rgba(218,212,187,.6);overflow:hidden}
+.gprog i{display:block;height:100%;background:linear-gradient(90deg,#8f8870,#dad4bb 70%,#fffbe8)}
+.gcap em{font-style:normal;font-size:13px;font-weight:700;line-height:1.4;color:#ffe6a3}
+.gtime{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.galert{display:flex;flex-direction:column;gap:1px;font-size:13.5px;line-height:1.35;min-width:0}
+.galert b{color:var(--gold-2)}
+.gline small{display:block;font-size:11px;color:var(--gold-2);letter-spacing:.1em}
+.gctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+/* 樣式選擇：每組一排按鈕，下面是選到的樣式的預兆與應對 */
+.gvar{display:flex;flex-direction:column;gap:8px;background:var(--panel-2);border-radius:10px;padding:8px 10px}
+.gvrow{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.gvinfo{display:flex;flex-direction:column;gap:6px}
+.gvopt{display:flex;flex-direction:column;gap:3px;border:1px solid transparent;border-radius:8px;padding:5px 8px}
+.gvopt>b{font-size:13px;color:var(--gold-2)}
+.gvopt.sel{border-color:var(--gold);background:#3a372e}
+.gmigo{margin-top:6px}
+.gtext{display:flex;flex-direction:column;gap:10px;min-width:0}
+.gtext .btext{font-size:14px}
+.gtext .milist{gap:8px}
+.gtext details.mi summary{pointer-events:none;list-style:none}
+.gtext details.mi summary::-webkit-details-marker{display:none}
+@media (max-width:1100px){.gcols{grid-template-columns:minmax(0,1fr)}.gplayer{max-width:560px}}
+@media (max-width:720px){
+  .gmain{grid-template-columns:minmax(0,1fr)}
+  .gnav{display:none}
+  .gsel{display:block}
+}
+/* 王的名稱（索引與內文） */
+.genc{font-size:12px;font-weight:700;color:var(--muted);padding:6px 10px 0}
+.genchead{margin:6px 0 0;font-family:var(--f-display);font-size:19px;display:flex;align-items:baseline;gap:10px}
+.genchead small{font-family:var(--f-body);font-size:12.5px;font-weight:400;color:var(--muted)}

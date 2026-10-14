@@ -1,0 +1,21 @@
+{
+  "name": "nier-raid-sim",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "FF14 尼爾系列團隊任務（複製工廠廢墟・人偶軍事基地・希望之砲台：塔）機制模擬器",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^26.6.5",
+    "jsdom": "^30.1.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.3"
+  }
+}

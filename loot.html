@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>尼爾團隊任務掉落物</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>尼爾團隊任務 <em>掉落物</em></h1>
+    </div>
+    <div class="ctrls">
+      <a class="btn ghost sm" href="./index.html">模擬器</a>
+      <a class="btn ghost sm" href="./guide.html">機制教學</a>
+    </div>
+  </header>
+
+  <div class="lbar">
+    <div class="lrow"><span class="lbl">副本</span><span class="grp" id="lRaid"></span></div>
+    <div class="lrow"><span class="lbl">顯示方式</span><span class="grp" id="lView"></span></div>
+    <div class="lrow"><span class="lbl">職能版本</span><span class="grp" id="lKind"></span></div>
+  </div>
+
+  <main id="lBody" class="lbody"></main>
+
+  <footer>
+    <p id="lSrc"></p>
+    <p>道具名稱由簡體資料轉成繁體字，可能和台服正式譯名不同；神典石種類依改版可能不同。</p>
+    <p>FINAL FANTASY XIV 為 SQUARE ENIX 的商標；本工具為玩家自製的非官方練習工具。</p>
+  </footer>
+</div>
+<script type="module" src="/src/loot.ts"></script>
+</body>
+</html>

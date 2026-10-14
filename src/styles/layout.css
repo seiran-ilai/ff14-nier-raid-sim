@@ -1,0 +1,162 @@
+/* 版面：左 說明欄、中 遊戲舞台、右 時間軸與紀錄；上方標題、隊伍／職能、練習項目 */
+.wrap{max-width:1360px;margin:0 auto;padding:12px 16px 32px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 20px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-family:var(--f-display);font-weight:900;font-size:clamp(22px,2.4vw,28px);line-height:1.2;white-space:nowrap}
+h1 em{font-style:normal;color:var(--gold)}
+h1 .beta{font-family:var(--f-body);font-size:12px;font-weight:700;vertical-align:middle;margin-left:10px;padding:2px 8px;border-radius:999px;border:1px solid var(--accent);color:var(--accent);letter-spacing:.08em}
+.ctrls{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.grp{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.lbl{font-size:12px;color:var(--muted);letter-spacing:.08em}
+.chip{font:inherit;font-size:13.5px;font-weight:500;color:var(--fg);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:4px 10px;cursor:pointer;min-width:36px}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#2b2924;font-weight:700}
+.chip:focus-visible,.btn:focus-visible,.slot:focus-visible,.drill:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn{font:inherit;font-weight:700;border-radius:9px;padding:8px 14px;cursor:pointer;border:1px solid var(--gold);background:var(--gold);color:#2b2924}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.btn.sm{padding:4px 10px;font-size:13px}
+a.btn{text-decoration:none;display:inline-block}
+.drillrows{display:flex;flex-direction:column;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.drills{display:grid;grid-template-columns:104px minmax(0,1fr);gap:8px;align-items:start}
+.drills .lbl{padding-top:8px}
+/* 練習方式：三選一的分段按鈕 */
+.modeseg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.modebtn{font:inherit;font-size:14px;font-weight:700;cursor:pointer;background:var(--panel);color:var(--muted);border:0;border-right:1px solid var(--line);padding:7px 16px}
+.modebtn:last-child{border-right:0}
+.modebtn[aria-checked="true"]{background:var(--gold);color:#2b2924}
+.modebtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.rowhint{padding-top:7px}
+.drills .items{display:flex;gap:6px;flex-wrap:wrap;align-items:stretch}
+/* 跟座位無關的機制：變淡但可以點 */
+.drill.dim{opacity:.42}
+.drill.dim:hover{opacity:.8}
+.seatinfo{font-size:12.5px;color:var(--gold-2);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:3px 9px}
+.drill{font:inherit;font-size:14px;font-weight:700;cursor:pointer;background:var(--panel);border:1px solid var(--line);color:var(--fg);border-radius:9px;padding:6px 12px;line-height:1.3}
+.drill:hover{border-color:var(--accent)}
+.drill.tl{border-color:#6e6853}
+.drill[aria-pressed="true"]{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);background:#3a372e}
+/* 三欄：左 說明／隨機設定、中 舞台、右 時間軸／紀錄／常錯機制；窄螢幕改成舞台在上、兩欄在下，再窄就一欄 */
+.main{display:grid;grid-template-columns:280px minmax(0,1fr) 300px;grid-template-areas:"sl sc sr";gap:16px;align-items:start}
+.main .sl{grid-area:sl}.main .sc{grid-area:sc;min-width:0}.main .sr{grid-area:sr}
+@media (max-width:1180px){.main{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"sc sc" "sl sr"}}
+/* 大遊戲畫面（設定）：舞台佔滿寬度、兩個側欄移到下面 */
+body.bigstage:not(.mobile) .main{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"sc sc" "sl sr"}
+body.bigstage:not(.mobile) .stage{max-width:min(1100px,max(440px,calc(100vh - 130px)))}
+/* 收起側欄（上方按鈕）：只留遊戲畫面，畫面變大 */
+body.nosides:not(.mobile) .main{grid-template-columns:minmax(0,1fr);grid-template-areas:"sc"}
+body.nosides:not(.mobile) .main .sl,body.nosides:not(.mobile) .main .sr{display:none}
+body.nosides:not(.mobile) .stage{max-width:min(1100px,max(440px,calc(100vh - 130px)))}
+/* 側欄收起時機制提示卡看不到：詠唱提示與王台詞照樣顯示在遊戲畫面上 */
+body.nosides:not(.mobile) .casttip{display:block}
+body.nosides:not(.mobile) .bossline{display:flex}
+@media (max-width:720px){.main{grid-template-columns:minmax(0,1fr);grid-template-areas:"sc" "sr" "sl"}}
+/* 機制提示卡（右欄最上面）：固定高度、內容在卡片裡捲動，出現提示時不會把下面的卡片擠下去 */
+.tipcard{height:240px;overflow-y:auto}
+.tipcard>*{flex-shrink:0}
+body.mobile .tipcard{height:auto;max-height:340px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.muted{color:var(--muted);font-size:13px;margin:0}
+/* 側欄：卡片直排；時間軸固定高度、內部捲動 */
+.side{display:flex;flex-direction:column;gap:12px;min-width:0}
+#seq{max-height:min(320px,40vh);overflow:auto;padding-right:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.card h3{margin:0;font-size:12.5px;letter-spacing:.12em;color:var(--muted)}
+.card h4{margin:0;font-size:18px;font-family:var(--f-display)}
+.card ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.seq{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;font-size:13.5px}
+.seq li{display:grid;grid-template-columns:44px 1fr;gap:8px;padding:2px 6px;border-radius:6px;color:var(--muted)}
+.seq li span{font-variant-numeric:tabular-nums}
+.seq li.emb{color:#d7a8ff}
+.seq li.now{background:rgba(218,212,187,.16);color:#fff;font-weight:700}
+.seq li.done{opacity:.55}
+.seq li.start{box-shadow:inset 3px 0 0 var(--ok)}
+.seq button{all:unset;cursor:pointer;display:contents}
+.seq li:has(button):hover{background:var(--panel-2)}
+/* 常錯機制：機制｜失誤次數｜成功率條，固定高度可捲動 */
+.weakhead,.weaklist li{display:grid;grid-template-columns:minmax(0,1fr) 40px 96px;gap:8px;align-items:center}
+.weakhead{font-size:11.5px;color:var(--muted);padding:0 4px}
+.weaklist{list-style:none;margin:0;padding:0 4px 0 0;display:flex;flex-direction:column;gap:2px;font-size:13.5px;max-height:200px;overflow:auto}
+.weaklist li{padding:3px 4px;border-radius:6px}
+.weaklist li:nth-child(odd){background:var(--panel-2)}
+.weaklist .wn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.weaklist b{font-variant-numeric:tabular-nums;color:var(--ng);text-align:right}
+.weaklist .wr{position:relative;height:16px;border-radius:4px;background:#161511;overflow:hidden}
+.weaklist .wr i{position:absolute;inset:0 auto 0 0;background:rgba(67,223,159,.35)}
+.weaklist .wr em{position:relative;font-style:normal;font-size:11.5px;padding-left:6px;font-variant-numeric:tabular-nums}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13.5px}
+.keys kbd{font-family:var(--f-body);font-size:12px;background:var(--panel-2);border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 6px;white-space:nowrap;justify-self:start}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.stat{background:var(--panel-2);border-radius:10px;padding:6px 10px}
+.stat b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px;color:var(--muted)}
+/* 測試版說明：標題下方一條醒目的提示 */
+.betanote{margin:0;font-size:13.5px;line-height:1.5;color:var(--fg);background:rgba(218,212,187,.08);border:1px solid var(--accent);border-radius:10px;padding:8px 12px}
+.betanote b{color:var(--accent)}
+.betanote a{color:var(--accent)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:4px}
+footer p{margin:0}
+footer a{color:var(--accent)}
+footer .src{margin:0 0 4px;padding:0;list-style:none;display:grid;grid-template-columns:max-content 1fr;gap:2px 12px}
+footer .src li{display:contents}
+footer .src span{color:var(--fg)}
+/* 手機版（body.mobile，由 src/ui/mobile.ts 依版面切換）：只看示範，隱藏自己練才用得到的東西 */
+body.mobile .pconly,body.mobile .hud.bar,body.mobile .modebtn[data-mode="rand"]{display:none}
+/* 舞台小（body.smallstage）或手機版：詠唱提示與王台詞不疊在舞台上（會擋住王的手勢與跑位），改看右欄的機制提示卡 */
+body.smallstage .casttip,body.smallstage .bossline,body.mobile .casttip,body.mobile .bossline{display:none}
+body.mobile .wrap{padding:10px 12px 24px;gap:12px}
+body.mobile h1 .beta{margin-left:6px}
+body.mobile .ctrls{gap:8px 12px}
+body.mobile .drills{grid-template-columns:minmax(0,1fr);gap:4px}
+body.mobile .drills .lbl{padding-top:0}
+body.mobile .drill{font-size:13px;padding:5px 10px}
+body.mobile .modebtn{padding:7px 12px}
+body.mobile .stage{max-width:100%}
+.tipnow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:18px}
+.tipnow b{font-family:var(--f-display);color:var(--gold-2)}
+.tipnow span{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tiptext{margin:0;font-size:15px;font-weight:700;line-height:1.5;color:#ffe6a3}
+.tipalert{margin:0;font-size:15px;font-weight:900;color:var(--gold-2)}
+.tipalert.danger{color:#ff9aa4}
+.tipline{margin:0;font-size:14px;display:flex;flex-direction:column;gap:2px;border-left:3px solid var(--gold);padding-left:8px}
+.tipline span{font-size:11.5px;color:var(--gold-2);letter-spacing:.1em}
+.tiplog{list-style:none;margin:0;padding:8px 0 0!important;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+.tiplog li{display:grid;grid-template-columns:40px 1fr;gap:6px}
+.tiplog li span:first-child{font-variant-numeric:tabular-nums}
+.tiplog b{color:var(--fg)}
+/* 說明卡：流程（編號清單）、要點；太長先收起來 */
+.btext{font-size:13.5px;line-height:1.55;color:var(--fg);max-height:15em;overflow:hidden;display:flex;flex-direction:column;gap:6px}
+.btext.open{max-height:none}
+.btext p{margin:0}
+.btext .bhead{font-weight:700;color:var(--gold-2);margin-top:4px}
+.btext .bsub{font-weight:700;font-size:12.5px;color:var(--muted)}
+.btext .bnote{font-size:12.5px;color:var(--muted)}
+.flow{margin:0;padding:0 0 0 0!important;list-style:none;counter-reset:f;display:flex;flex-direction:column;gap:2px!important}
+.flow li{counter-increment:f;display:grid;grid-template-columns:22px 1fr;gap:4px}
+.flow li::before{content:counter(f);font-size:11.5px;font-weight:700;color:var(--muted);text-align:right;padding-right:4px;font-variant-numeric:tabular-nums}
+.bpts{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+/* 機制說明：每個機制「效果 → 預兆 → 應對」 */
+.mihead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:1px solid var(--line);padding-top:8px;font-size:12.5px;font-weight:700;letter-spacing:.08em;color:var(--muted)}
+.mihead .muted{font-size:11.5px;font-weight:400;letter-spacing:0}
+.milist{display:flex;flex-direction:column;gap:6px}
+.milist.scroll{max-height:360px;overflow:auto;padding-right:4px}
+details.mi{background:var(--panel-2);border-radius:9px;padding:6px 10px}
+details.mi summary{cursor:pointer;font-weight:700;font-size:14px}
+details.mi[open] summary{color:var(--gold-2);margin-bottom:4px}
+.midl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:5px 8px;font-size:13px;line-height:1.5}
+.midl dt{font-size:11.5px;font-weight:700;padding:1px 6px;border-radius:5px;align-self:start;margin-top:1px;white-space:nowrap}
+.midl dd{margin:0}
+.midl dt.effect{background:rgba(200,193,166,.16);color:#e6e0c8}
+.midl dt.tell{background:rgba(218,212,187,.18);color:var(--gold-2)}
+.midl dt.how{background:rgba(67,223,159,.16);color:var(--ok)}
+.howto{display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.linkbtn{all:unset;cursor:pointer;font-size:13px;color:var(--accent);align-self:flex-start}
+.linkbtn:hover{text-decoration:underline}
+.card .weaklist{padding-left:0}
+/* 副本按鈕：上面小字「尼爾 1」，下面副本名；還沒有資料的標「準備中」 */
+.raidbtn{font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:flex-start;gap:0;background:var(--panel);border:1px solid var(--line);color:var(--fg);border-radius:9px;padding:5px 14px 6px;font-size:15px;font-weight:700;line-height:1.3;font-family:var(--f-display)}
+.raidbtn small{font-family:var(--f-body);font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.1em}
+.raidbtn em{font-family:var(--f-body);font-style:normal;font-size:11px;color:var(--muted)}
+.raidbtn:hover{border-color:var(--accent)}
+.raidbtn[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#2b2924}
+.raidbtn[aria-pressed="true"] small,.raidbtn[aria-pressed="true"] em{color:#5a5546}
+.raidbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.drill small{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
