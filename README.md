@@ -14,6 +14,17 @@ FF14 尼爾系列 24 人團隊任務的機制練習器，三個副本做在同�
 
 Vite + TypeScript（strict）+ Canvas 2D，沒有 UI 框架。
 
+**直接玩：** https://seiran-ilai.github.io/ff14-nier-raid-sim/
+
+## 資料來源
+
+| 用途 | 來源 |
+|---|---|
+| 機制效果、掉落 | [FF14 灰機 wiki](https://ff14.huijiwiki.com/)（簡體中文，已轉繁體整理） |
+| 處理方式（攻略） | [新大陸異聞錄](https://ff14.org/) |
+
+各技能詠唱秒數、AOE 大小、場地尺寸、時間軸順序大多是估計值（資料沒寫明），寫在各王檔案的 `T` 常數並標「估計」。
+
 ## 指令
 
 ```

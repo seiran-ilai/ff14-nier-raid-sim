@@ -1,6 +1,6 @@
 /*
  * 尼爾 1 複製工廠廢墟・第一王：多關節型：司令機
- * 資料：灰機 wiki（機制效果）＋ 新大陸見聞（處理方式）。
+ * 資料：灰機 wiki（機制效果）＋ 新大陸異聞錄（處理方式）。
  * 時間軸順序、詠唱秒數、AOE 大小、場地尺寸全部是估計（wiki 與攻略都沒有寫），集中在 T。
  */
 import type { Vec } from '../../core/constants';
@@ -26,7 +26,7 @@ const T = {
   mortar: { cast: 4, r: 5, n: 6, spotR: 16 },
   barrage: { cast: 5, r: 40, w: deg(50), n: 3, gap: 0.9 },
   guided: { cast: 4, tether: 4, fire: 1.5, w: 4 },
-  /** 旋轉攻擊：預兆只出現不到 1 秒（新大陸見聞） */
+  /** 旋轉攻擊：預兆只出現不到 1 秒（新大陸異聞錄） */
   spin: { cast: 5, visible: 0.8, sideOff: 7.5, sideHW: 4.5, centerHW: 5, len: 20 },
   air: { cast: 4.5, outer: 16, inner: 6, r: 4, dur: 6, show: 1.6, safe: 11, kb: 10 },
   sweep: { cast: 4, show: 3.5 },

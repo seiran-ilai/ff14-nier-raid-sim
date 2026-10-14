@@ -1,6 +1,6 @@
 # 尼爾 1 複製工廠廢墟：資料整理與待確認事項
 
-來源：[灰機 wiki](https://ff14.huijiwiki.com/wiki/%E5%A4%8D%E5%88%B6%E5%B7%A5%E5%8E%82%E5%BA%9F%E5%A2%9F)（機制效果、掉落）、[新大陸見聞](https://ff14.org/duty/700.htm)（處理方式）。
+來源：[灰機 wiki](https://ff14.huijiwiki.com/wiki/%E5%A4%8D%E5%88%B6%E5%B7%A5%E5%8E%82%E5%BA%9F%E5%A2%9F)（機制效果、掉落）、[新大陸異聞錄](https://ff14.org/duty/700.htm)（處理方式）。
 名稱由簡體轉繁體字，可能和台服正式譯名不同。程式：`src/raids/copied/`（每個王一個檔，檔頭寫估計值）。
 
 ## 已做的機制

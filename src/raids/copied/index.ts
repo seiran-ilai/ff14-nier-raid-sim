@@ -12,7 +12,7 @@ export const copied: Raid = {
   encounters: [commander, hobbes, engels, ninesee],
   sources: [
     { label: '機制效果、掉落（灰機 wiki）', url: 'https://ff14.huijiwiki.com/wiki/%E5%A4%8D%E5%88%B6%E5%B7%A5%E5%8E%82%E5%BA%9F%E5%A2%9F' },
-    { label: '處理方式（新大陸見聞）', url: 'https://ff14.org/duty/700.htm' },
+    { label: '處理方式（新大陸異聞錄）', url: 'https://ff14.org/duty/700.htm' },
   ],
   note: '機制資料整理中。',
 };
