@@ -1,5 +1,6 @@
-// 遊戲畫面上的 HUD：詠唱條、王台詞對話框、提示、增減益圖示列、右上資訊、失誤 toast、時間軸目前位置
+// 遊戲畫面上的 HUD：詠唱條、王台詞對話框、提示、增減益圖示列、隊伍血量、右上資訊、失誤 toast、時間軸目前位置
 import { DIRNAME, fmtT } from '../core/format';
+import { roleType } from '../core/constants';
 import { hasBuff, type GameState } from '../game/state';
 import type { InputState } from '../game/simulation';
 import { $ } from './dom';
@@ -18,12 +19,25 @@ function icons(G: GameState): Icon[] {
   }
   if (hasBuff(G, P, 'sprint')) out.push({ glyph: '疾', name: '疾跑', left: P.buffs.sprint! - G.t, kind: 'buff' });
   if (hasBuff(G, P, 'akb')) out.push({ glyph: '防', name: '防擊退', left: P.buffs.akb! - G.t, kind: 'buff' });
+  if (hasBuff(G, P, 'mit')) out.push({ glyph: '減', name: '減傷', left: P.buffs.mit! - G.t, kind: 'buff' });
+  if (hasBuff(G, P, 'rmit')) out.push({ glyph: '團', name: '團隊減傷', left: P.buffs.rmit! - G.t, kind: 'buff' });
+  if (P.shield && P.shield.until > G.t) out.push({ glyph: '盾', name: '護盾', left: P.shield.until - G.t, kind: 'buff' });
   return out;
 }
 
 const fmtLeft = (s: number): string => (s >= 10 ? String(Math.ceil(s)) : s.toFixed(1));
 
-let lastCur = -2;
+let lastCur = -2, lastParty = '';
+
+/** 自己隊伍 8 人的血量（護盾＝下方細條） */
+function updParty(G: GameState): void {
+  const P = G.player;
+  const h = G.ents.filter((e) => e.al === P.al && !e.away).map((e) => {
+    const sh = e.shield && e.shield.until > G.t ? e.shield.amt : 0, hp = Math.round(e.hp);
+    return `<div class="pm ${roleType(e.role)}${e === P ? ' me' : ''}${e.dead ? ' dead' : ''}${hp < 50 ? ' low' : ''}"><b>${e.role}</b><span class="hpb"><i style="width:${hp}%"></i>${sh ? `<s style="width:${Math.round((sh / 45) * 100)}%"></s>` : ''}</span><em>${hp}</em></div>`;
+  }).join('');
+  if (h !== lastParty) { lastParty = h; $('party').innerHTML = `<p>${P.al} 隊</p>${h}`; }
+}
 
 export function updHUD(G: GameState | null, input: InputState): void {
   if (!G) return;
@@ -51,6 +65,7 @@ export function updHUD(G: GameState | null, input: InputState): void {
   const P = G.player;
   $('tr').innerHTML = `<span>${G.enc.name}</span><span>時間 <b>${fmtT(G.t)}</b>${G.ff ? ' ・快轉 ×2' : ''}</span><span>面向 <b>${DIRNAME(P.face)}</b>${input.rmb ? '（右鍵）' : ''}</span>${G.tl ? `<span>失誤 <b>${G.fails.length}</b></span>` : ''}`;
   $('toast').innerHTML = G.toasts.slice(-3).map((t) => `<div>${t.text}</div>`).join('');
+  updParty(G);
   updActionBar(G);
 
   if (G.tl && G.seq.length) {

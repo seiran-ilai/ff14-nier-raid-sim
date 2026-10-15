@@ -4,7 +4,8 @@
 //   rand:<r|n>:<分鐘>:<id,…>  隨機練習（id 是單一機制的 key；r＝可重複、n＝不重複）
 //   weak:<id,…>               弱點練習：把幾個單一機制串成一局
 import type { Drill, GameState } from '../game/state';
-import { at, alertMsg, freshBosses, seqAdd } from '../game/state';
+import { at, alertMsg, freshBosses, ownersOf, pullsOf, seqAdd } from '../game/state';
+import { needProvoke } from '../game/roles';
 import { clampIn } from '../core/arena';
 import type { Encounter, MechInfo, Raid } from '../raids/types';
 import { RAIDS, raidById } from '../raids';
@@ -53,9 +54,11 @@ export function setEncounter(G: GameState, t: number, enc: Encounter): void {
       const h = clampIn(enc.arena, enc.home(e.al, e.role), 1);
       Object.assign(e, { x: h.x, y: h.y, px: h.x, py: h.y, mt: { ...h }, ov: null, faceLock: null, forced: null, marker: undefined, statuses: [], away: false });
     });
+    G.owner = ownersOf(enc);
     enc.onEnter?.(G);
     alertMsg(G, `換王：${enc.name}`, 1.8);
   });
+  pullsOf(enc).forEach(([al, id]) => needProvoke(G, t + 0.5, al, id));
 }
 
 /** 換王之間的空檔（秒） */

@@ -26,6 +26,7 @@ export function updActionBar(G: GameState): void {
       el.style.setProperty('--p', (left / (+a.cd || 1)) * 100 + '%');
       el.textContent = String(Math.ceil(left));
     } else el.hidden = true;
-    el.parentElement!.classList.toggle('active', (a.type === 'sprint' && hasBuff(G, P, 'sprint')) || (a.type === 'akb' && hasBuff(G, P, 'akb')));
+    el.parentElement!.classList.toggle('active', (a.type === 'sprint' && hasBuff(G, P, 'sprint')) || (a.type === 'akb' && hasBuff(G, P, 'akb'))
+      || (a.type === 'mit' && hasBuff(G, P, 'mit')) || (a.type === 'raidMit' && hasBuff(G, P, 'rmit')));
   });
 }

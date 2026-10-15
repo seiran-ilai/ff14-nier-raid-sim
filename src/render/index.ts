@@ -48,7 +48,8 @@ export function draw(G: RenderState | null, cfg: Config, opts: DrawOpts = {}): v
   G.objs.forEach((o) => drawObj(c, o, G));
   G.tele.forEach((t) => drawTele(c, t, G.t));
   G.bosses.forEach((b) => drawBoss(c, b, alpha));
-  G.fx.forEach((f) => { if (f.k !== 'flash') drawFx(c, f, G); });
+  // 教學頁（noYou）不顯示技能跳字：那是玩家職能的示範，教學頁看的是全部職能
+  G.fx.forEach((f) => { if (f.k !== 'flash' && !(opts.noYou && f.k === 'pop')) drawFx(c, f, G); });
   G.ents.filter((e) => !e.isPlayer && !e.away).forEach((e) => drawEnt(c, e, G, alpha));
   drawEnt(c, P, G, alpha, !opts.noYou);
   G.enc.draw?.(c, G, 'top');

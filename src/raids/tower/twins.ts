@@ -13,6 +13,7 @@ import { alertMsg, at, moveBoss, present, variant, type GameState } from '../../
 import { claim, settle } from '../../game/bots';
 import { aoe, castAt, spread, stack } from '../../mechanics/common';
 import { drill, flowHtml } from '../../drills/build';
+import { partyHit, tankHit, tankOf } from '../../game/roles';
 import type { Encounter } from '../types';
 import { TOMES, towerGear } from './shared';
 import { assignSpots, clusterHome } from '../layout';
@@ -42,8 +43,13 @@ function reset(G: GameState, t: number): void {
 function combo1(G: GameState, t0: number): number {
   const a = castAt(G, t0, '痛擊／喊叫', 5, '一隻放死刑（坦克減傷）、另一隻放全場 AOE；之後互換再一次', '韓塞爾與格雷特');
   at(G, a, () => { G.fx.push({ k: 'flash', until: G.t + 0.25 }); });
+  // 痛擊：先打韓塞爾的坦克（A 隊），互換後打格雷特的坦克（B 隊）；喊叫＝全場
+  tankHit(G, a, [tankOf(G, 'A')], '痛擊');
+  partyHit(G, a, '喊叫');
   const b = castAt(G, a + 1, '喊叫／痛擊', 5, '互換：死刑換另一位坦克吃', '韓塞爾與格雷特', false);
   at(G, b, () => { G.fx.push({ k: 'flash', until: G.t + 0.25 }); });
+  tankHit(G, b, [tankOf(G, 'B')], '痛擊');
+  partyHit(G, b, '喊叫');
   return b + 1;
 }
 
@@ -134,6 +140,7 @@ export const twins: Encounter = {
   ],
   home,
   startFace: 0,
+  pulls: { A: 'han', B: 'gre' },
   info: {
     '強化：槍／盾': { effect: '血量較高的讀「強化：槍」、較低的讀「強化：盾」；兩隻靠近時都變成槍盾強化。從背後或側面打帶盾強化的那隻會被反彈（報復：受傷＋擊退）。', tell: '兩隻各自讀條強化。', how: '兩名坦克分開拉、保持距離；其他人<b>轉火打槍 Boss</b>；拉盾 Boss 的坦克讓它的頭朝向人群（只打正面）。', tank: '兩名坦克各拉一隻並保持距離（太近兩隻都會變成槍盾強化）；拉盾 Boss 的讓它的正面朝向人群。', dps: '轉火打槍 Boss；打盾 Boss 只能從正面打（背後、側面會被反彈）。' },
     組合一: { effect: '兩隻同時各放一種（不重複）：痛擊（死刑）、喊叫（全場 AOE），之後互換再放一次。', tell: '兩隻同時讀條。', how: '坦克減傷、補師抬血。', tank: '痛擊是死刑：兩隻互換後再打一次，拉兩隻的坦克各吃一次，都要開減傷。', heal: '死刑和全場 AOE 同時來、之後再一次：先上群盾、抬坦克。' },

@@ -1,11 +1,17 @@
 // 設定視窗與改鍵
-import { saveConfig, cloneActs, DEFAULT_ACTS, MAX_ACTS, type ActionConfig, type ActType, type Config } from '../core/config';
+import { saveConfig, cloneActs, DEFAULT_ROLE_ACTS, MAX_ACTS, syncActs, type ActionConfig, type ActType, type Config } from '../core/config';
+import { roleType } from '../core/constants';
 import type { Session } from '../game/session';
 import { $, seg } from './dom';
 import { renderBar } from './actionbar';
 import { resize } from '../render/canvas';
 
-const TYPE_NAME: Record<ActType, string> = { sprint: '疾跑（加速）', akb: '防擊退', dash: '位移', interject: '插言（打斷）' };
+const TYPE_NAME: Record<ActType, string> = {
+  sprint: '疾跑（加速）', akb: '防擊退', dash: '位移', interject: '插言（打斷）',
+  provoke: '挑釁（坦）', mit: '減傷（坦）', shield: '單盾（補）', aoeHeal: '群補（補）', aoeShield: '群盾（補）', raidMit: '團隊減傷（D）',
+};
+/** 這些類型沒有持續秒數 */
+const NO_DUR: ActType[] = ['dash', 'interject', 'provoke', 'aoeHeal'];
 const DIRS: [string, string][] = [['fwd', '前'], ['back', '後'], ['left', '左'], ['right', '右']];
 
 /** 大遊戲畫面、收起側欄：換 body class，換完重算 canvas 大小 */
@@ -43,7 +49,7 @@ export function renderSettings(cfg: Config): void {
     <select data-f="type" aria-label="類型">${Object.entries(TYPE_NAME).map(([k, n]) => `<option value="${k}" ${a.type === k ? 'selected' : ''}>${n}</option>`).join('')}</select>
     ${a.type === 'dash' ? `<span style="display:flex;gap:4px">${cap(i)}<select data-f="dir" aria-label="方向">${DIRS.map(([k, n]) => `<option value="${k}" ${(a.dir || 'fwd') === k ? 'selected' : ''}>${n}</option>`).join('')}</select></span>` : cap(i)}
     ${a.type === 'dash' ? `<input data-f="dist" type="number" min="1" max="40" value="${a.dist}" aria-label="距離">` : '<span class="muted">—</span>'}
-    ${a.type !== 'dash' && a.type !== 'interject' ? `<input data-f="dur" type="number" min="1" max="30" value="${a.dur}" aria-label="持續">` : '<span class="muted">—</span>'}
+    ${!NO_DUR.includes(a.type) ? `<input data-f="dur" type="number" min="1" max="30" value="${a.dur}" aria-label="持續">` : '<span class="muted">—</span>'}
     <input data-f="cd" type="number" min="0" max="300" value="${a.cd}" aria-label="冷卻">
     <button class="btn ghost sm" data-del="${i}">刪除</button></div>`).join('');
 }
@@ -95,7 +101,8 @@ export function bindSettings(session: Session): void {
     cfg.acts.push({ name: '新技能', type: 'dash', dir: 'fwd', code: '', label: '', dist: 10, dur: 0, cd: 30 });
     saveConfig(cfg); renderSettings(cfg); renderBar(cfg);
   };
-  $('resetAct').onclick = () => { cfg.acts = cloneActs(DEFAULT_ACTS); saveConfig(cfg); renderSettings(cfg); renderBar(cfg); };
+  // 還原預設：只還原目前職能的技能列
+  $('resetAct').onclick = () => { const rt = roleType(cfg.role); cfg.roleActs[rt] = cloneActs(DEFAULT_ROLE_ACTS[rt]); syncActs(cfg); saveConfig(cfg); renderSettings(cfg); renderBar(cfg); };
   $('openSet').onclick = () => { session.pause(); $('modal').hidden = false; renderSettings(cfg); };
   $('closeSet').onclick = () => { capturing = -1; $('modal').hidden = true; };
   $('openHelp').onclick = () => { session.pause(); $('help').hidden = false; };

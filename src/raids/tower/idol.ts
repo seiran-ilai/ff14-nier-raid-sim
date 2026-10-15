@@ -15,6 +15,7 @@ import { claim, npcs, settle } from '../../game/bots';
 import { aoe, buster, castAt, knockback, passIf, raidwide, zone } from '../../mechanics/common';
 import { drill, flowHtml } from '../../drills/build';
 import { text } from '../../render/canvas';
+import { needProvoke } from '../../game/roles';
 import type { Encounter } from '../types';
 import { TOMES, towerGear } from './shared';
 import { clusterHome } from '../layout';
@@ -43,7 +44,9 @@ const C0: Vec = { x: 0, y: 0 };
 const home = clusterHome(C0, 9.5);
 
 function toPhase2(G: GameState, t: number): void {
-  at(G, t, () => { bossById(G, 'idol').hidden = true; bossById(G, 'bloom').hidden = false; });
+  at(G, t, () => { bossById(G, 'idol').hidden = true; bossById(G, 'bloom').hidden = false; G.owner.bloom = 'A'; });
+  // 時間軸轉場：A 隊坦克挑釁開花的神明
+  if (G.tl) needProvoke(G, t + 0.5, 'A', 'bloom');
 }
 
 export type Spin = 'ccw' | 'cw';

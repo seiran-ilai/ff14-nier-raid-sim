@@ -1,10 +1,10 @@
 /*
  * 尼爾 1 複製工廠廢墟・第二王：霍布斯
- * A／B／C 三隊被分到三個平臺（各自有地板機關），北邊是會旋轉切換機關的牆。模擬器只畫 A 隊的平臺（牆面機制三隊相同；地板機關隨機出三隊其中一種），
+ * A／B／C 三隊被分到三個平臺（各自有地板機關），北邊是會旋轉切換機關的牆。模擬器只模擬玩家那一隊的平臺，
  * 其他兩隊不在畫面上（Entity.away）。資料：灰機 wiki（機制）＋ 新大陸見聞錄（處理方式：所有人在場地右前方集合）。
  * 平臺大小、詠唱秒數、AOE 大小、時間軸順序全部是估計（T）。
  */
-import { ALS, ROLES, type Alliance, type Role, type Vec } from '../../core/constants';
+import { ROLES, type Alliance, type Role, type Vec } from '../../core/constants';
 import { squareArena } from '../../core/arena';
 import { angTo, deg, polar, DIR } from '../../core/geometry';
 import type { Shape } from '../../core/shapes';
@@ -199,7 +199,7 @@ type Arm = 'multi' | 'box' | 'fire';
 const armSeg = (G: GameState, t: number, a: Arm): number =>
   a === 'multi' ? multi(G, t) : a === 'box' ? container(G, t) : flame(G, t, G.rng.pickOne<FirePat>(['mid', 'sides', 'left', 'right']));
 
-/** 估計的完整時間軸：三組牆面機制（順序依機械臂位置，這裡隨機）之間穿插環形激光、激光照射，之後地板機關（隨機一隊的）、短途導彈 */
+/** 估計的完整時間軸：三組牆面機制（順序依機械臂位置，這裡隨機）之間穿插環形激光、激光照射，之後依隊伍的地板機關、短途導彈 */
 function fullSeg(G: GameState, t0: number): number {
   const arms = G.rng.shuffle<Arm>(['multi', 'box', 'fire']);
   let t = laserTest(G, t0);
@@ -209,7 +209,7 @@ function fullSeg(G: GameState, t0: number): number {
   t = laserShot(G, t) + 1.5;
   t = armSeg(G, t, arms[2]) + 1.5;
   at(G, t, () => alertMsg(G, '最終得分大幅超出預測。諸位已被判定為異常個體。', 3));
-  t = floor(G, t + 2, G.rng.pickOne(ALS)) + 1.5;
+  t = floor(G, t + 2, G.player.al) + 1.5;
   t = missiles(G, t) + 1.5;
   return laserTest(G, t);
 }
@@ -237,15 +237,15 @@ export const hobbes: Encounter = {
     短途導彈: { effect: '每個平臺點名 4 名 DPS，放大範圍火屬性 AOE。', tell: 'DPS 頭上出現點名。', how: '被點名的人<b>各自跑到四個角落</b>，其他人留在中間。', tank: '不會被點：留在中間。', heal: '不會被點：留在中間，注意跑到角落的 DPS 血量。', dps: '只點 DPS（每個平臺 4 人）：被點到就跑到自己的角落，四人各佔一角。' },
   },
   drills: {
-    full: drill({ tl: true, name: '完整時間軸', sub: 'A 隊平臺', brief: flowHtml(['耐激光檢測', '牆面機制 ×3（右臂／左臂／火炎放射器，順序隨機），中間穿插環形激光、激光照射', '「諸位已被判定為異常個體」→ 地板機關（隨機出 A／B／C 其中一種）', '短途導彈', '耐激光檢測']) + '<p class="bnote">三隊各在自己的平臺、牆面機制相同，只畫 A 隊平臺；地板機關三隊不同（A 電磁脈衝、B 強制移動、C 噴油），這裡隨機出一種。順序為估計。</p>', info: ALL, seg: fullSeg }),
+    full: drill({ tl: true, name: '完整時間軸', sub: '你那一隊的平臺', brief: flowHtml(['耐激光檢測', '牆面機制 ×3（右臂／左臂／火炎放射器，順序隨機），中間穿插環形激光、激光照射', '「諸位已被判定為異常個體」→ 你那隊的地板機關', '短途導彈', '耐激光檢測']) + '<p class="bnote">三隊各在自己的平臺、牆面機制相同，只模擬你那隊；地板機關依上方選的隊伍（A 電磁脈衝、B 強制移動、C 噴油）。順序為估計。</p>', info: ALL, seg: fullSeg }),
     multi: drill({ name: '右臂：多重攻擊檢測', sub: '三爪扇形旋轉', brief: '', info: ['多重攻擊檢測'], mechs: ['多重攻擊檢測'], seg: multi }),
     box: drill({ name: '左臂：集裝箱', sub: '塌方・崩塌・自爆', brief: '', info: ['集裝箱'], mechs: ['集裝箱', '自爆攻擊'], seg: container }),
     fire: drill({ name: '耐火焰檢測', sub: '看北牆噴頭', brief: '', info: ['耐火焰檢測'], mechs: ['耐火焰檢測'],
       seg: (G, t0) => flame(G, t0, variant<FirePat>(G, 'fire', G.rng.pickOne<FirePat>(['mid', 'sides', 'left', 'right']))) }),
     ring: drill({ name: '環形激光', sub: '由外往內', brief: '', info: ['環形激光'], mechs: ['環形激光'], seg: ringLaser }),
     laser: drill({ name: '激光照射', sub: '補師直線分攤', brief: '', info: ['激光照射'], mechs: ['激光照射'], seg: laserShot }),
-    floor: drill({ name: '地板機關', sub: '三隊各不同', brief: 'A 隊：電磁脈衝攻擊；B 隊：強制移動；C 隊：噴油。單練時隨機出一種，教學頁可以切換。', info: ['電磁脈衝攻擊', '強制移動', '噴油'], mechs: ['電磁脈衝攻擊', '強制移動', '噴油'],
-      seg: (G, t0) => floor(G, t0, variant<Alliance>(G, 'floor', G.rng.pickOne(ALS))) }),
+    floor: drill({ name: '地板機關', sub: '依你的隊伍', brief: 'A 隊：電磁脈衝攻擊；B 隊：強制移動；C 隊：噴油。教學頁可以切換三種。', info: ['電磁脈衝攻擊', '強制移動', '噴油'], mechs: ['電磁脈衝攻擊', '強制移動', '噴油'],
+      seg: (G, t0) => floor(G, t0, variant<Alliance>(G, 'floor', G.player.al)) }),
     missile: drill({ name: '短途導彈', sub: 'DPS 點名分散', brief: '', info: ['短途導彈'], mechs: ['短途導彈'], seg: missiles }),
   },
   variants: {

@@ -54,6 +54,8 @@ export interface Encounter {
   drills: Record<string, Drill>;
   /** 練習項目 key → 可以選的樣式 */
   variants?: Record<string, VariantGroup[]>;
+  /** 一開始哪一隊的坦克拉哪隻王（王的 id；沒寫＝A 隊拉第一隻）：時間軸開場、換王時要挑釁 */
+  pulls?: Partial<Record<Alliance, string>>;
   /** 進場時（開局或隨機練習換到這個王）：例如把不在這個平臺的隊伍設成 away */
   onEnter?(G: GameState): void;
   /** 掉落物（依副本資料） */

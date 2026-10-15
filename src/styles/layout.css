@@ -95,7 +95,7 @@ footer .src{margin:0 0 4px;padding:0;list-style:none;display:grid;grid-template-
 footer .src li{display:contents}
 footer .src span{color:var(--fg)}
 /* 手機版（body.mobile，由 src/ui/mobile.ts 依版面切換）：只看示範，隱藏自己練才用得到的東西 */
-body.mobile .pconly,body.mobile .hud.bar,body.mobile .modebtn[data-mode="rand"]{display:none}
+body.mobile .pconly,body.mobile .hud.bar,body.mobile .hud.party,body.mobile .modebtn[data-mode="rand"]{display:none}
 /* 舞台小（body.smallstage）或手機版：詠唱提示與王台詞不疊在舞台上（會擋住王的手勢與跑位），改看右欄的機制提示卡 */
 body.smallstage .casttip,body.smallstage .bossline,body.mobile .casttip,body.mobile .bossline{display:none}
 body.mobile .wrap{padding:10px 12px 24px;gap:12px}
@@ -147,6 +147,8 @@ details.mi[open] summary{color:var(--gold-2);margin-bottom:4px}
 .midl dt.tank{background:rgba(79,127,242,.15);color:#2f56b0}
 .midl dt.heal{background:rgba(60,186,106,.17);color:#1d7040}
 .midl dt.dps{background:rgba(214,84,84,.15);color:#a83434}
+/* 模擬器：選的職能那一行加粗、加底色 */
+body[data-role="tank"] .midl dt.tank+dd,body[data-role="heal"] .midl dt.heal+dd,body[data-role="dps"] .midl dt.dps+dd{font-weight:700;background:rgba(255,255,255,.7);border-radius:5px;padding:0 4px;margin-left:-4px}
 .howto{display:flex;flex-direction:column;gap:6px;font-size:13.5px}
 .linkbtn{all:unset;cursor:pointer;font-size:13px;color:var(--accent);align-self:flex-start}
 .linkbtn:hover{text-decoration:underline}

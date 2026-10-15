@@ -1,11 +1,14 @@
-// 上方：副本 → 練習方式 → 王 → 練習項目；右側：本項目紀錄、最常錯的機制
+// 上方：隊伍（A／B／C）、職能（坦／補／D）、副本 → 練習方式 → 王 → 練習項目；右側：本項目紀錄、最常錯的機制
 import { saveConfig, type PickMode } from '../core/config';
 import { RAIDS, raidById } from '../raids';
 import type { Raid } from '../raids/types';
 import { SINGLES, encMain, getDrill, randKey, singleForMech } from '../drills';
 import type { Session } from '../game/session';
 import { getDrillStat, worstMechs, clearMechStats } from '../game/stats';
-import { $ } from './dom';
+import { ALS, PICK_NAME, PICK_ROLES, roleType, type Alliance, type Role } from '../core/constants';
+import { syncActs } from '../core/config';
+import { renderBar } from './actionbar';
+import { $, seg } from './dom';
 
 export function renderStats(session: Session): void {
   const s = getDrillStat(session.cfg.drill);
@@ -52,6 +55,10 @@ export function renderTop(session: Session): void {
   const cfg = session.cfg;
   const raid = selRaid(session), enc = selEnc(raid, cfg.enc);
   const mode = modeOf(cfg.drill);
+  seg($('alSeg'), ALS, cfg.al, (v) => { cfg.al = v as Alliance; saveConfig(cfg); renderTop(session); session.newGame(); });
+  seg($('roleSeg'), PICK_ROLES, cfg.role as (typeof PICK_ROLES)[number], (v) => { cfg.role = v as Role; syncActs(cfg); saveConfig(cfg); renderBar(cfg); renderTop(session); session.newGame(); }, (v) => PICK_NAME[v]);
+  // 機制說明裡自己職能的那一行要醒目（CSS：body[data-role]）
+  document.body.dataset.role = roleType(cfg.role);
   const row = (label: string, items: string): string => `<span class="lbl">${label}</span><div class="items">${items}</div>`;
 
   $('raidRow').innerHTML = row('副本', RAIDS.map((r) =>

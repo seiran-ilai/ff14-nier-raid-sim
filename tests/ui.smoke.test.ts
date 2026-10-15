@@ -29,10 +29,28 @@ describe('UI 冒煙測試', () => {
   it('初始畫面：副本、練習方式、王、技能列、準備畫面', () => {
     expect(document.querySelectorAll('#raidRow [data-raid]').length).toBe(RAIDS.length);
     expect(document.querySelectorAll('#drillsMode [data-mode]').length).toBe(3);
-    expect(document.querySelectorAll('#bar .slot').length).toBe(4);
+    // 隊伍 A／B／C、職能坦／補／D；預設 DPS：團隊減傷＋疾跑、防擊退、前衝、後跳
+    expect(document.querySelectorAll('#alSeg button').length).toBe(3);
+    expect(document.querySelectorAll('#roleSeg button').length).toBe(3);
+    expect(document.querySelectorAll('#bar .slot').length).toBe(5);
+    expect(document.querySelector('#bar .slot b')!.textContent).toBe('團隊減傷');
     expect(document.querySelectorAll('#ov [data-mode]').length).toBe(2);
     frames(120);
     expect(document.querySelector('#ov [data-mode]')).not.toBeNull(); // 沒按開始就不會倒數
+  });
+
+  it('換職能：技能列換成那個職能的，隊伍血量列出 8 人', () => {
+    click('#roleSeg [data-v="MT"]');
+    expect([...document.querySelectorAll('#bar .slot b')].map((b) => b.textContent)).toContain('挑釁');
+    click('#roleSeg [data-v="H1"]');
+    expect([...document.querySelectorAll('#bar .slot b')].map((b) => b.textContent)).toEqual(expect.arrayContaining(['單盾', '群補', '群盾']));
+    click('#alSeg [data-v="B"]');
+    frames(2);
+    expect(document.querySelectorAll('#party .pm').length).toBe(8);
+    expect(document.getElementById('party')!.textContent).toContain('B 隊');
+    click('#alSeg [data-v="A"]');
+    click('#roleSeg [data-v="D1"]');
+    expect(document.querySelectorAll('#bar .slot').length).toBe(5);
   });
 
   it('還沒有資料的副本顯示「準備中」，不會換掉目前的練習', () => {
@@ -57,7 +75,7 @@ describe('UI 冒煙測試', () => {
     frames(200);
     expect(document.getElementById('ov')!.hidden).toBe(true);
     expect(document.getElementById('tr')!.textContent).toContain('時間');
-    key('keydown', 'Digit1', '1');
+    key('keydown', 'Digit2', '2');
     key('keydown', 'KeyD', 'd');
     frames(30);
     key('keyup', 'KeyD', 'd');
@@ -74,7 +92,7 @@ describe('UI 冒煙測試', () => {
     expect(document.getElementById('ov')!.hidden).toBe(true);
     click('#openSet');
     expect(document.getElementById('modal')!.hidden).toBe(false);
-    expect(document.querySelectorAll('#acts .act').length).toBe(4);
+    expect(document.querySelectorAll('#acts .act').length).toBe(5);
     click('#closeSet');
     expect(document.getElementById('modal')!.hidden).toBe(true);
   });

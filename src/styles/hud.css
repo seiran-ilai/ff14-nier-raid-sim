@@ -36,6 +36,19 @@ body.mobile .stage{--barh:0px}
 .ico.urgent b{animation:urgent .5s steps(2) infinite}
 @keyframes urgent{50%{box-shadow:0 0 0 3px #ff5d6c,0 0 18px #ff5d6c}}
 @media (prefers-reduced-motion:reduce){.ico.urgent b{animation:none}}
+/* 隊伍血量（左下，技能列上方）：職能色的代號、血條、護盾細條 */
+.party{left:10px;bottom:calc(var(--barh) + 10px);width:150px;display:flex;flex-direction:column;gap:2px;background:var(--hud);border:1px solid var(--line);border-radius:8px;padding:5px 8px 6px;font-size:11px;box-shadow:var(--hud-shadow)}
+.party p{margin:0 0 1px;font-weight:700;color:var(--muted);letter-spacing:.08em}
+.pm{display:grid;grid-template-columns:24px 1fr 22px;gap:5px;align-items:center;line-height:1.25}
+.pm b{font-weight:800}
+.pm.tank b{color:#2f56b0} .pm.heal b{color:#1d7040} .pm.dps b{color:#a83434}
+.pm.me{background:rgba(42,120,184,.1);border-radius:4px;margin:0 -4px;padding:0 4px}
+.pm em{font-style:normal;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+.hpb{position:relative;height:8px;border-radius:3px;background:var(--panel-2);overflow:hidden}
+.hpb i{position:absolute;inset:0 auto 0 0;background:#3fa36b;border-radius:3px}
+.pm.low .hpb i{background:#d9822b}
+.hpb s{position:absolute;left:0;bottom:0;height:3px;max-width:100%;background:#e0b400}
+.pm.dead{opacity:.45}
 /* 回放 */
 .replay{left:50%;bottom:12px;transform:translateX(-50%);width:min(90%,460px);background:rgba(247,248,250,.95);box-shadow:0 4px 16px rgba(0,0,0,.35);border:1px solid var(--accent);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
 .rphead{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
@@ -74,6 +87,9 @@ body.mobile .stage{--barh:0px}
 .mgroup{display:flex;flex-direction:column;gap:3px}
 .mgroup .mph{font-weight:700;color:var(--gold-2)}
 .mitems{display:flex;flex-wrap:wrap;gap:3px 14px;padding-left:22px}
+/* 開局卡片：職能要做的事 */
+.duty{margin:0;font-size:13px;line-height:1.55;color:var(--fg);background:var(--panel-2);border-radius:8px;padding:7px 10px}
+.duty span{display:inline-block;margin-right:8px;font-size:11.5px;font-weight:700;color:var(--on-gold);background:var(--gold);border-radius:5px;padding:0 7px}
 /* 開局卡片：兩種開始方式 */
 .starts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 @media (max-width:560px){.starts{grid-template-columns:minmax(0,1fr)}}

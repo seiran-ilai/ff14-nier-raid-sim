@@ -2,7 +2,7 @@
 import { dirV } from '../core/geometry';
 import type { Vec } from '../core/constants';
 import type { Effect, RenderState } from '../game/state';
-import { px, circle } from './canvas';
+import { px, circle, text } from './canvas';
 import { drawBurst } from './telegraphs';
 
 export function drawFx(c: CanvasRenderingContext2D, f: Effect, G: RenderState): void {
@@ -41,6 +41,13 @@ export function drawFx(c: CanvasRenderingContext2D, f: Effect, G: RenderState): 
       c.strokeStyle = '#ff5d6c'; c.lineWidth = px(2.5); c.stroke();
       c.fillStyle = '#ff5d6c'; circle(c, f.src.x, f.src.y, 0.6); c.fill();
       break;
+    case 'pop': {
+      // 用了什麼技能：在頭上往上飄、淡出
+      const k = (G.t - f.start) / (f.until - f.start);
+      c.globalAlpha = Math.max(0, 1 - k * 0.7);
+      text(c, f.text, f.to.x, f.to.y - 2.4 - k * 1.4, 12, f.col, 800);
+      break;
+    }
     case 'flash':
       break;
   }

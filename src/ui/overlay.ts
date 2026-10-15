@@ -1,6 +1,7 @@
 // 遊戲畫面覆蓋層：準備（錯誤即停／錯誤不停／教學示範）、倒數、暫停、錯誤即停的失誤分析、結算
 import { fmtT } from '../core/format';
 import { saveConfig, type Config } from '../core/config';
+import { roleType, type RoleType } from '../core/constants';
 import { getDrill, findInfo } from '../drills';
 import { mechDl } from '../drills/build';
 import { mechName } from '../game/results';
@@ -14,6 +15,18 @@ const MODE_NOTE: Record<Config['failMode'], string> = {
   stop: '犯錯就停下，看錯在哪、正確怎麼做',
   continue: '打完整段，最後一次看所有判定',
 };
+
+/** 開局卡片：選的隊伍與職能，以及這個職能會判定什麼（技能名稱照技能列） */
+const DUTY: Record<RoleType, (n: (t: string, d: string) => string) => string> = {
+  tank: (n) => `開場／換王／轉場要在 6 秒內${n('provoke', '挑釁')}自己隊的王（別挑別隊的）；死刑判定時要開著${n('mit', '減傷')}`,
+  heal: (n) => `全場 AOE 前上${n('aoeShield', '群盾')}、死刑前給自己隊的坦克上${n('shield', '單盾')}；受傷後幾秒內用${n('aoeHeal', '群補')}補回來（自己那隊只有你在補）`,
+  dps: (n) => `全場 AOE 時，${n('raidMit', '團隊減傷')}冷卻好了就要開`,
+};
+function dutyHtml(cfg: Config): string {
+  const n = (type: string, def: string): string => { const a = cfg.acts.find((x) => x.type === type); return `<b>${a?.name ?? def}${a?.label ? `（${a.label}）` : ''}</b>`; };
+  const rt = roleType(cfg.role);
+  return `<p class="duty"><span>${cfg.al} 隊・${{ tank: '坦克', heal: '補師', dps: 'DPS' }[rt]}</span>${DUTY[rt](n)}；技能冷卻好了卻沒用＝失誤。</p>`;
+}
 
 /** 失誤分析：這個機制的預兆與應對（沒有機制說明就用目前練習的說明） */
 function howTo(session: Session, c: Check): string {
@@ -42,6 +55,7 @@ function renderReady(session: Session): void {
       <button class="startbtn" data-mode="continue"><b>錯誤不停</b><span>${MODE_NOTE.continue}</span></button>
       <button class="startbtn" data-demo><b>教學示範</b><span>角色自動照攻略正解跑一次（T）</span></button>
     </div>
+    ${dutyHtml(cfg)}
     <p class="muted">Enter／空白鍵＝用上次的方式（${cfg.failMode === 'stop' ? '錯誤即停' : '錯誤不停'}）開始</p></div>`;
   ov.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((b) => {
     b.onclick = () => { cfg.failMode = b.dataset.mode as Config['failMode']; saveConfig(cfg); session.start(); };

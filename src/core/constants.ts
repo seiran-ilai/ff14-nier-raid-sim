@@ -13,4 +13,7 @@ export type RoleType = 'tank' | 'heal' | 'dps';
 export const roleType = (r: Role): RoleType => (r === 'MT' ? 'tank' : r[0] === 'H' ? 'heal' : 'dps');
 export const ROLE_NAME: Record<Role, string> = { MT: '坦克', H1: '補師 1', H2: '補師 2', D1: 'DPS 1', D2: 'DPS 2', D3: 'DPS 3', D4: 'DPS 4', D5: 'DPS 5' };
 export const ROLE_COL: Record<RoleType, string> = { tank: '#4f7ff2', heal: '#3cba6a', dps: '#d65454' };
+/** 介面上可選的職能（坦／補／D）：固定 A 隊，對應 MT、H1、D1 */
+export const PICK_ROLES = ['MT', 'H1', 'D1'] as const satisfies readonly Role[];
+export const PICK_NAME: Record<(typeof PICK_ROLES)[number], string> = { MT: '坦克', H1: '補師', D1: 'DPS' };
 export const AL_COL: Record<Alliance, string> = { A: '#ff8a8a', B: '#8ad0ff', C: '#ffd36b' };

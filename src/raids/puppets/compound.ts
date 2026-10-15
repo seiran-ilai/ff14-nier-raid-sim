@@ -14,6 +14,7 @@ import { claim, findSafe, npcs, settle } from '../../game/bots';
 import { aoe, castAt, chase, knockback, raidwide, spread, stack, towers } from '../../mechanics/common';
 import { drill, flowHtml } from '../../drills/build';
 import { text } from '../../render/canvas';
+import { needProvoke } from '../../game/roles';
 import type { Encounter } from '../types';
 import { gearSet, TOMES } from '../gear';
 import { assignSpots, clusterHome } from '../layout';
@@ -46,7 +47,9 @@ const home = clusterHome(C0, 8);
 
 /** 第二階段：人偶群消失、2P 出現 */
 function toPhase2(G: GameState, t: number): void {
-  at(G, t, () => { bossById(G, 'group').hidden = true; const p = bossById(G, '2p'); p.hidden = false; p.x = p.px = P2.x; p.y = p.py = P2.y; });
+  at(G, t, () => { bossById(G, 'group').hidden = true; const p = bossById(G, '2p'); p.hidden = false; p.x = p.px = P2.x; p.y = p.py = P2.y; G.owner['2p'] = 'A'; });
+  // 時間軸轉場：A 隊坦克挑釁 2P
+  if (G.tl) needProvoke(G, t + 0.5, 'A', '2p');
 }
 
 // ---------- 第一階段：融合的人偶群 ----------

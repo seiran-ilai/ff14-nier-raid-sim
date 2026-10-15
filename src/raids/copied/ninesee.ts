@@ -14,6 +14,7 @@ import { claim, npcs, settle } from '../../game/bots';
 import { aoe, castAt, passIf, raidwide, spread, stack } from '../../mechanics/common';
 import { drill, flowHtml } from '../../drills/build';
 import { px, text, circle } from '../../render/canvas';
+import { mainTank, tankHit } from '../../game/roles';
 import type { Encounter } from '../types';
 import { clusterHome, yorha, TOMES } from './shared';
 
@@ -210,7 +211,11 @@ function finalProgram(G: GameState, t0: number): number {
   return end + 1;
 }
 
-const suppress = (G: GameState, t0: number): number => castAt(G, t0, '壓制射擊', 4, '對 MT 的死刑：坦克開減傷', nameOf) + 0.5;
+function suppress(G: GameState, t0: number): number {
+  const end = castAt(G, t0, '壓制射擊', 4, '對 MT 的死刑：坦克開減傷', nameOf);
+  tankHit(G, end, [mainTank(G)], '壓制射擊');
+  return end + 0.5;
+}
 const allLaser = (G: GameState, t0: number): number => raidwide(G, t0, '全方位激光', 5, undefined, nameOf) + 0.8;
 
 function fullSeg(G: GameState, t0: number): number {

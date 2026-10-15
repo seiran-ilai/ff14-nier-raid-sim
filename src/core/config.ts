@@ -1,10 +1,14 @@
 // 使用者設定（存 localStorage）
 import { store } from './storage';
-import type { Alliance, Role } from './constants';
+import { ALS, roleType, type Alliance, type Role, type RoleType } from './constants';
 
 /** 練習方式：單一王（時間軸或單一機制）／整個副本連續打／隨機練習 */
 export type PickMode = 'one' | 'cont' | 'rand';
-export type ActType = 'sprint' | 'akb' | 'dash' | 'interject';
+/**
+ * 技能類型：通用（疾跑、防擊退、位移）＋職能技能
+ *   坦：provoke 挑釁、mit 減傷、interject 打斷　補：shield 單盾（給自己隊的坦克）、aoeHeal 群補、aoeShield 群盾　D：raidMit 團隊減傷
+ */
+export type ActType = 'sprint' | 'akb' | 'dash' | 'interject' | 'provoke' | 'mit' | 'shield' | 'aoeHeal' | 'aoeShield' | 'raidMit';
 export type DashDir = 'fwd' | 'back' | 'left' | 'right';
 
 export interface ActionConfig {
@@ -40,8 +44,11 @@ export interface Config {
   /** 收起兩側的說明欄 */
   hideSides: boolean;
   sound: boolean;
+  /** 目前職能的技能列（＝roleActs[目前職能]，換職能時由 syncActs 換掉） */
   acts: ActionConfig[];
-  /** 玩家操控的角色：介面不給選（坦補 D 的差別寫在機制說明），固定 A 隊 DPS；測試與除錯網址可以改 */
+  /** 三種職能各自的技能列（改鍵、改類型都存在這裡） */
+  roleActs: Record<RoleType, ActionConfig[]>;
+  /** 玩家操控的角色：隊伍 A／B／C，職能只選坦／補／D（MT、H1、D1）；測試與除錯網址可以改成其他座位 */
   al: Alliance;
   role: Role;
   /** 目前的練習項目 key（見 drills/index.ts） */
@@ -54,22 +61,56 @@ export interface Config {
   rand: { repeat: boolean; mins: number; ids: string[] };
 }
 
-export const MAX_ACTS = 8;
+export const MAX_ACTS = 10;
 
-export const DEFAULT_ACTS: readonly ActionConfig[] = [
-  { name: '疾跑', type: 'sprint', code: 'Digit1', label: '1', dist: 0, dur: 10, cd: 60 },
-  { name: '防擊退', type: 'akb', code: 'Digit2', label: '2', dist: 0, dur: 6, cd: 120 },
-  { name: '前衝', type: 'dash', dir: 'fwd', code: 'Digit3', label: '3', dist: 15, dur: 0, cd: 30 },
-  { name: '後跳', type: 'dash', dir: 'back', code: 'Digit4', label: '4', dist: 10, dur: 0, cd: 30 },
-];
+const key = (n: number): Pick<ActionConfig, 'code' | 'label'> => ({ code: `Digit${n}`, label: String(n) });
+
+/** 各職能預設技能列（冷卻、持續秒數是估計：一個死刑／全場 AOE 都來得及用一次） */
+export const DEFAULT_ROLE_ACTS: Readonly<Record<RoleType, readonly ActionConfig[]>> = {
+  tank: [
+    { name: '挑釁', type: 'provoke', ...key(1), dist: 0, dur: 0, cd: 30 },
+    { name: '減傷', type: 'mit', ...key(2), dist: 0, dur: 10, cd: 25 },
+    { name: '打斷', type: 'interject', ...key(3), dist: 0, dur: 0, cd: 30 },
+    { name: '疾跑', type: 'sprint', ...key(4), dist: 0, dur: 10, cd: 60 },
+    { name: '防擊退', type: 'akb', ...key(5), dist: 0, dur: 6, cd: 120 },
+    { name: '前衝', type: 'dash', dir: 'fwd', ...key(6), dist: 15, dur: 0, cd: 30 },
+  ],
+  heal: [
+    { name: '單盾', type: 'shield', ...key(1), dist: 0, dur: 15, cd: 2.5 },
+    { name: '群補', type: 'aoeHeal', ...key(2), dist: 0, dur: 0, cd: 2.5 },
+    { name: '群盾', type: 'aoeShield', ...key(3), dist: 0, dur: 15, cd: 30 },
+    { name: '疾跑', type: 'sprint', ...key(4), dist: 0, dur: 10, cd: 60 },
+    { name: '防擊退', type: 'akb', ...key(5), dist: 0, dur: 6, cd: 120 },
+    { name: '後跳', type: 'dash', dir: 'back', ...key(6), dist: 10, dur: 0, cd: 30 },
+  ],
+  dps: [
+    { name: '團隊減傷', type: 'raidMit', ...key(1), dist: 0, dur: 15, cd: 60 },
+    { name: '疾跑', type: 'sprint', ...key(2), dist: 0, dur: 10, cd: 60 },
+    { name: '防擊退', type: 'akb', ...key(3), dist: 0, dur: 6, cd: 120 },
+    { name: '前衝', type: 'dash', dir: 'fwd', ...key(4), dist: 15, dur: 0, cd: 30 },
+    { name: '後跳', type: 'dash', dir: 'back', ...key(5), dist: 10, dur: 0, cd: 30 },
+  ],
+};
+/** 舊版只有一組技能列（DPS 那組沒有職能技能的版本）；設定裡的「還原預設」用目前職能的預設 */
+export const DEFAULT_ACTS = DEFAULT_ROLE_ACTS.dps;
+
+const defaultRoleActs = (): Record<RoleType, ActionConfig[]> =>
+  ({ tank: cloneActs(DEFAULT_ROLE_ACTS.tank), heal: cloneActs(DEFAULT_ROLE_ACTS.heal), dps: cloneActs(DEFAULT_ROLE_ACTS.dps) });
+
+/** cfg.acts 換成目前職能的技能列 */
+export function syncActs(cfg: Config): void {
+  cfg.acts = cfg.roleActs[roleType(cfg.role)];
+}
 
 export const cloneActs = (a: readonly ActionConfig[]): ActionConfig[] => JSON.parse(JSON.stringify(a));
 
 export function defaultConfig(): Config {
-  return {
+  const cfg: Config = {
     auto: true, speed: 1, hint: true, text: true, failMode: 'stop', cdReset: true, cam: 'fixed', zoom: 'mid', big: false, hideSides: false, sound: true,
-    acts: cloneActs(DEFAULT_ACTS), al: 'A', role: 'D1', drill: '', raid: '', enc: '', pick: 'one', rand: { repeat: true, mins: 3, ids: [] },
+    acts: [], roleActs: defaultRoleActs(), al: 'A', role: 'D1', drill: '', raid: '', enc: '', pick: 'one', rand: { repeat: true, mins: 3, ids: [] },
   };
+  syncActs(cfg);
+  return cfg;
 }
 
 export function loadConfig(): Config {
@@ -79,12 +120,17 @@ export function loadConfig(): Config {
   const cfg = c as unknown as Config;
   // 舊版截圖網址可能把速度存成 0：讀到不合理的值就用預設
   if (!(typeof cfg.speed === 'number' && cfg.speed > 0)) cfg.speed = d.speed;
-  if (!Array.isArray(cfg.acts)) cfg.acts = d.acts;
-  // 舊版可以選隊伍、職能：存的座位不再沿用
-  cfg.al = d.al; cfg.role = d.role;
+  const ra = cfg.roleActs as Partial<Record<RoleType, unknown>> | undefined;
+  cfg.roleActs = d.roleActs;
+  (['tank', 'heal', 'dps'] as const).forEach((k) => { if (Array.isArray(ra?.[k])) cfg.roleActs[k] = ra[k] as ActionConfig[]; });
+  if (!ALS.includes(cfg.al)) cfg.al = d.al;
+  // 舊版可以選 8 個座位：換成同職能的 MT／H1／D1
+  cfg.role = cfg.role === 'MT' ? 'MT' : typeof cfg.role === 'string' && cfg.role[0] === 'H' ? 'H1' : 'D1';
+  syncActs(cfg);
   return cfg;
 }
 
 export function saveConfig(cfg: Config): void {
-  (Object.keys(cfg) as (keyof Config)[]).forEach((k) => store.set(k, cfg[k]));
+  // acts 只是 roleActs 其中一組的別名，不另外存
+  (Object.keys(cfg) as (keyof Config)[]).forEach((k) => { if (k !== 'acts') store.set(k, cfg[k]); });
 }

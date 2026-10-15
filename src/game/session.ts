@@ -3,7 +3,9 @@ import type { Config } from '../core/config';
 import { createRng } from '../core/rng';
 import { SIM_DT } from '../core/tuning';
 import { getDrill } from '../drills';
-import { createState, type GameState, type Sfx } from './state';
+import { createState, pullsOf, type GameState, type Sfx } from './state';
+import { needProvoke } from './roles';
+import { syncActs } from '../core/config';
 import { step, type InputState } from './simulation';
 import { useAct } from './actions';
 import { recordDrill, recordMechs } from './stats';
@@ -47,6 +49,7 @@ export class Session {
   newGame(auto = false, seed?: number, startAt = this.startAt): GameState {
     const { drill, enc } = getDrill(this.cfg.drill);
     this.frozen = false;
+    syncActs(this.cfg);
     const G = createState(this.cfg, auto, createRng(seed), enc, !!drill.tl);
     if (this.pick) G.pick = { ...this.pick };
     if (!this.cfg.cdReset && this.cdsKeep) G.cds = this.cdsKeep;
@@ -54,6 +57,8 @@ export class Session {
     this.acc = 0;
     this.input.moveTo = null;
     this.rec.clear();
+    // 時間軸開場：拉王的坦克要挑釁（單一機制不用）
+    if (drill.tl) pullsOf(enc).forEach(([al, id]) => needProvoke(G, 0.5, al, id));
     drill.setup(G);
     G.ev.sort();
     G.seq.sort((a, b) => a.t - b.t);

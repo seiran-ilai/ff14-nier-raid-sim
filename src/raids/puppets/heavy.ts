@@ -13,6 +13,7 @@ import { alertMsg, at, bossById, moveBoss, variant, type Entity, type GameState 
 import { claim, npcs, settle } from '../../game/bots';
 import { aoe, castAt, passIf, raidwide, spread, towers } from '../../mechanics/common';
 import { drill, flowHtml } from '../../drills/build';
+import { tankHit } from '../../game/roles';
 import type { Encounter } from '../types';
 import { gearSet, TOMES } from '../gear';
 import { assignSpots, byAngle, clusterHome } from '../layout';
@@ -97,6 +98,7 @@ function laser(G: GameState, t0: number): number {
     const b = boss(G);
     aoe(G, end + i * o.gap, { k: 'rect', O: { x: b.x, y: b.y }, H: angTo(b, tk), len: 45, w: o.w }, { tag, show: 1.5, why: '被坦克的高功率激光掃到（必死）', ok: i ? '躲開兩條高功率激光' : null, only: (e) => e !== tk });
   }));
+  tanks.forEach((tk, i) => tankHit(G, end + i * o.gap, [tk], tag));
   settle(G, end + o.gap + 0.4, me);
   return end + o.gap + 1;
 }

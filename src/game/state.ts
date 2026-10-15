@@ -7,7 +7,8 @@ import type { Rng } from '../core/rng';
 import type { Encounter } from '../raids/types';
 import { Scheduler } from './scheduler';
 
-export interface Buffs { sprint?: number; akb?: number; heavy?: number }
+/** mit＝坦克減傷、rmit＝團隊減傷（到幾秒為止） */
+export interface Buffs { sprint?: number; akb?: number; heavy?: number; mit?: number; rmit?: number }
 /** 頭上／狀態列的增減益（機制自己加的，例如「出血」「點名」） */
 export interface Status { id: string; name: string; glyph: string; until: number; kind: 'buff' | 'debuff' }
 export interface Forced { vx: number; vy: number; left: number }
@@ -37,6 +38,10 @@ export interface Entity {
   stun: number;
   stunKind?: 'stun' | 'stone' | 'fear' | 'bind';
   dead: boolean;
+  /** 血量 0～100（職能判定用：死刑、全場 AOE 扣血，補師補回來） */
+  hp: number;
+  /** 護盾：吸收量與到期時間 */
+  shield?: { amt: number; until: number };
   /** 不在這個場地上（例如霍布斯各隊在不同平臺：只模擬自己那隊）：不畫、不動、不判定 */
   away?: boolean;
   /** 上一個模擬步的位置與面向（渲染插值用） */
@@ -87,7 +92,9 @@ export type Effect =
   /** 連線：從王（boss id）或某個點連到角色 */
   | { k: 'tether'; from: string | Vec; to: Entity; until: number; col?: string }
   /** 視線（背對）：從來源畫到每個人 */
-  | { k: 'gaze'; src: Vec; until: number };
+  | { k: 'gaze'; src: Vec; until: number }
+  /** 頭上跳出的字（用了什麼技能、扣多少血） */
+  | { k: 'pop'; to: Entity; text: string; col: string; start: number; until: number };
 
 /** 正確處理方式（回放時標出）：位置、可選的正確面向 */
 export interface Fix { x: number; y: number; r?: number; face?: number; label: string }
@@ -153,6 +160,10 @@ export interface GameState {
   mech: Record<string, boolean>;
   /** 最後一次用插言（打斷）的時間 */
   lastInterject?: number;
+  /** 玩家挑釁的紀錄（時間、對象王 id） */
+  provokes: { t: number; id: string }[];
+  /** 每隻王由哪一隊的坦克拉（挑釁判定用：挑了別隊的王算失誤） */
+  owner: Record<string, Alliance>;
   /** 錯誤即停：讓這局停下來的那個失誤 */
   stopCheck?: Check;
   /** 各王自己的狀態（機制檔自己定義形狀，用 encData 取） */
@@ -181,8 +192,12 @@ export interface Drill {
 
 export function mkEnt(enc: Encounter, al: Alliance, role: Role, isPlayer: boolean): Entity {
   const h = enc.home(al, role);
-  return { al, role, isPlayer, x: h.x, y: h.y, face: enc.startFace ?? 0, mt: { ...h }, ov: null, faceLock: null, forced: null, buffs: {}, statuses: [], stun: 0, dead: false, px: h.x, py: h.y, pface: enc.startFace ?? 0 };
+  return { al, role, isPlayer, x: h.x, y: h.y, face: enc.startFace ?? 0, mt: { ...h }, ov: null, faceLock: null, forced: null, buffs: {}, statuses: [], stun: 0, dead: false, hp: 100, px: h.x, py: h.y, pface: enc.startFace ?? 0 };
 }
+
+/** 王 id → 拉它的隊伍（Encounter.pulls；沒寫＝A 隊拉第一隻） */
+export const pullsOf = (enc: Encounter): [Alliance, string][] => Object.entries(enc.pulls ?? { A: enc.bosses[0].id }) as [Alliance, string][];
+export const ownersOf = (enc: Encounter): Record<string, Alliance> => Object.fromEntries(pullsOf(enc).map(([al, id]) => [id, al]));
 
 export const freshBosses = (enc: Encounter): BossEnt[] => enc.bosses.map((b) => ({ ...b, px: b.x, py: b.y, pface: b.face, mv: undefined }));
 
@@ -193,7 +208,7 @@ export function createState(cfg: Config, auto: boolean, rng: Rng, enc: Encounter
     t: 0, state: auto ? 'count' : 'ready', countT: 3, ents, player: ents.find((e) => e.isPlayer)!, ev: new Scheduler(), tele: [], fx: [], objs: [], zones: [],
     bosses: freshBosses(enc), enc, arena: enc.arena, cast: null, line: null, alert: null, toasts: [],
     auto: !!auto, checks: [], fails: [], endT: 9999, hints: [], paused: false, cds: {}, tl, seq: [], ff: false,
-    cfg, rng, sfx: [], botFails: [], startAt: 0, mech: {}, x: {},
+    cfg, rng, sfx: [], botFails: [], startAt: 0, mech: {}, x: {}, provokes: [], owner: ownersOf(enc),
   };
   enc.onEnter?.(G);
   return G;

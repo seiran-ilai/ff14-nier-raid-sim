@@ -16,6 +16,7 @@ import { GAZE_ANGLE, REACT, RUN, TELE_SHOW } from '../core/tuning';
 import { at, bossById, force, hasBuff, present, seqAdd, setCast, type Entity, type Fix, type GameState, type Telegraph, type Zone } from '../game/state';
 import { good, bad, hurtPlayer, botHit } from '../game/results';
 import { dodge, findSafe, npcs } from '../game/bots';
+import { partyHit, tankHit } from '../game/roles';
 
 const alive = present;
 
@@ -30,6 +31,7 @@ export function castAt(G: GameState, t: number, name: string, dur: number, tip?:
 export function raidwide(G: GameState, t: number, name: string, dur: number, tip = '全場 AOE：不用走位，補師注意抬血', who?: string): number {
   const end = castAt(G, t, name, dur, tip, who);
   at(G, end, () => { G.fx.push({ k: 'flash', until: G.t + 0.25 }); G.sfx.push('hit'); });
+  partyHit(G, end, name);
   return end;
 }
 
@@ -278,6 +280,8 @@ export interface BusterOpts {
 /** 點名圓形（坦克死刑、點名大圈）：被點的人到旁邊吃，其他人不能在圈裡 */
 export function buster(G: GameState, t: number, o: BusterOpts): void {
   const show = o.show ?? TELE_SHOW;
+  // 死刑（坦克點名）：扣血、減傷／單盾判定
+  if ((o.kind ?? 'tb') === 'tb') tankHit(G, t, o.targets, o.tag);
   at(G, t - show, () => {
     o.targets.forEach((tg) => { tg.marker = { kind: o.kind ?? 'tb', until: t, r: o.r }; });
     if (o.spot && o.targets.includes(G.player)) G.hints = [{ ...o.spot(G.player), r: 1.4, label: '離開人群吃' }];

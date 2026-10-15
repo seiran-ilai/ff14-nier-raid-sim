@@ -157,6 +157,7 @@ export const flight: Encounter = {
   arena: squareArena(T.half, 'wall'),
   bosses: ALS.map((al) => ({ id: ID[al], name: NAME[al], ...POS[al], face: angTo(POS[al], C0), r: 3.5, col: { A: '#ff8a8a', B: '#8ad0ff', C: '#ffd36b' }[al] })),
   home,
+  pulls: { A: 'a', B: 'b', C: 'c' },
   info: {
     啟用防禦程序: { effect: '724P 連線 A 隊、767P 連線 B 隊、772P 連線 C 隊，給對應的防禦程序：只能打自己隊伍的王（對其他王的攻擊無效）。任一台被打倒時清除所有人的防禦程序。', tell: '三台各自連線一隊。', how: '各隊打自己的王：A 打 724P（西南）、B 打 767P（北）、C 打 772P（東南）。', tank: 'A 隊坦克拉 724P（西南）、B 隊拉 767P（北）、C 隊拉 772P（東南）。', dps: '只能打自己隊的王：打別隊的王無效。' },
     '攻擊：導彈全彈發射': { effect: '三台依序全場 AOE（導彈連續命中）。', tell: '詠唱「導彈全彈發射」。', how: '不用走位，補師抬血。', heal: '三台依序全場傷害，連續三段：先上群盾，持續群補。' },

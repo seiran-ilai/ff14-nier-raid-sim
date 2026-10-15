@@ -15,6 +15,7 @@ import { claim, npcs, settle } from '../../game/bots';
 import { aoe, castAt, knockback, passIf, raidwide, spread } from '../../mechanics/common';
 import { drill, flowHtml } from '../../drills/build';
 import { px, text } from '../../render/canvas';
+import { mainTank, tankHit } from '../../game/roles';
 import type { Encounter } from '../types';
 import { clusterHome, yorha, TOMES } from './shared';
 
@@ -207,7 +208,11 @@ function omni(G: GameState, t0: number): number {
   return t1 + o.gap * 3 + 0.8;
 }
 
-const strike = (G: GameState, t0: number): number => castAt(G, t0, '強攻擊', 4.5, '對一仇的大傷害（坦克死刑）：坦克開減傷') + 0.5;
+function strike(G: GameState, t0: number): number {
+  const end = castAt(G, t0, '強攻擊', 4.5, '對一仇的大傷害（坦克死刑）：坦克開減傷');
+  tankHit(G, end, [mainTank(G)], '強攻擊');
+  return end + 0.5;
+}
 const quake = (G: GameState, t0: number): number => raidwide(G, t0, '大震動', 5) + 0.8;
 
 /** 估計的完整時間軸（wiki 沒寫順序） */
