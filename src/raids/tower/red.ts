@@ -189,9 +189,9 @@ export const red: Encounter = {
     if (layer === 'floor') {
       (s.walls ?? []).forEach((w) => {
         const u = dirV(w.dir), L = T.wall.len / 2;
-        c.save(); c.lineCap = 'butt'; c.lineWidth = 1.2; c.strokeStyle = w.col === 'white' ? '#f1ecd8' : '#141210';
+        c.save(); c.lineCap = 'butt'; c.lineWidth = 1.2; c.strokeStyle = w.col === 'white' ? '#ffffff' : '#141210';
         c.beginPath(); c.moveTo(w.c.x - u.x * L, w.c.y - u.y * L); c.lineTo(w.c.x + u.x * L, w.c.y + u.y * L); c.stroke();
-        c.lineWidth = px(1.5); c.strokeStyle = w.col === 'white' ? '#8f8870' : '#8f8870'; c.stroke(); c.restore();
+        c.lineWidth = px(1.5); c.strokeStyle = '#59606a'; c.stroke(); c.restore();
       });
       if (s.meteor && G.t < s.meteor.until) {
         const m = s.meteor;

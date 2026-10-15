@@ -257,15 +257,15 @@ export const engels: Encounter = {
     if (!b || b.id !== 'eng') return;
     // 王的手臂：舉起＝金色往北伸、放下＝灰色往南；高舉＝雙手往北、展開＝雙手往兩側張開
     const arm = (s: number, up: boolean, wide = false): void => {
-      c.save(); c.strokeStyle = up ? '#ffd36b' : '#8f8870'; c.lineWidth = px(7); c.lineCap = 'round';
+      c.save(); c.strokeStyle = up ? '#e0a21a' : '#9aa0a9'; c.lineWidth = px(7); c.lineCap = 'round';
       const ex = b.x + s * (wide ? 10 : 6.5), ey = b.y + (wide ? 0.5 : up ? -6 : 5);
       c.beginPath(); c.moveTo(b.x + s * 3.5, b.y); c.quadraticCurveTo(b.x + s * 7, b.y, ex, ey); c.stroke();
-      c.fillStyle = up ? '#ffd36b' : '#8f8870'; c.beginPath(); c.arc(ex, ey, 1.2, 0, Math.PI * 2); c.fill(); c.restore();
+      c.fillStyle = up ? '#e0a21a' : '#9aa0a9'; c.beginPath(); c.arc(ex, ey, 1.2, 0, Math.PI * 2); c.fill(); c.restore();
     };
     // 王面南：左手在畫面東側（s = +1）
     if (p.k === 'L') { arm(1, true); arm(-1, false); } else if (p.k === 'R') { arm(-1, true); arm(1, false); }
     else if (p.k === 'raise') { arm(1, true); arm(-1, true); } else { arm(1, false, true); arm(-1, false, true); }
-    if (G.enc.id === 'eng') text(c, { L: '舉左手', R: '舉右手', raise: '高舉（前傾）', spread: '展開（後仰）' }[p.k], b.x, b.y - 7.5, 13, '#ffd36b');
+    if (G.enc.id === 'eng') text(c, { L: '舉左手', R: '舉右手', raise: '高舉（前傾）', spread: '展開（後仰）' }[p.k], b.x, b.y - 7.5, 13, '#8a5a00');
   },
   loot: {
     currency: [[TOMES.詩學, 30], [TOMES.數理, 30]],

@@ -291,9 +291,9 @@ export const commander: Encounter = {
     }
     if (layer === 'top' && G.t < s.soldierUntil) {
       s.soldiers.forEach((p) => {
-        c.save(); c.fillStyle = '#6e6853'; c.strokeStyle = '#f1ecd8'; c.lineWidth = px(1.5);
+        c.save(); c.fillStyle = '#b3b9c1'; c.strokeStyle = '#3b4049'; c.lineWidth = px(1.5);
         c.beginPath(); c.rect(p.x - 1.1, p.y - 1.1, 2.2, 2.2); c.fill(); c.stroke(); c.restore();
-        text(c, '士兵機', p.x, p.y - 2, 10.5, '#f1ecd8', 700);
+        text(c, '士兵機', p.x, p.y - 2, 10.5, '#1f2329', 700);
       });
     }
   },

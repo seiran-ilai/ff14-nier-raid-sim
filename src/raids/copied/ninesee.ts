@@ -80,7 +80,7 @@ function mekhane(G: GameState, t0: number): number {
   const safe = G.rng.pickOne([0, 1, 2, 3]);
   const H = T.half;
   const quads: Shape[] = QUAD.filter((_q, i) => i !== safe).map((q) => ({ k: 'rect', O: { x: (q.x * H) / 2, y: 0 }, H: q.y < 0 ? DIR.N : DIR.S, len: H, w: H }));
-  at(G, t0, () => QUAD.forEach((q, i) => { if (i !== safe) G.objs.push({ k: 'orb', x: q.x * 14, y: q.y * 14, r: 2.2, col: '#8f8870', until: end + 0.5, label: '麥喀士' }); }));
+  at(G, t0, () => QUAD.forEach((q, i) => { if (i !== safe) G.objs.push({ k: 'orb', x: q.x * 14, y: q.y * 14, r: 2.2, col: '#9aa0a9', until: end + 0.5, label: '麥喀士' }); }));
   aoe(G, end + 0.5, quads, { tag, show: o.cast + 0.5, visible: 2, why: '站在有麥喀士手臂的角落', ok: '到沒有手臂的角落' });
   settle(G, end + 0.9, me);
   return end + 1.4;
@@ -194,7 +194,7 @@ function finalProgram(G: GameState, t0: number): number {
   stack(G, s1, { tag: '殘骸墜落', show: 5, r: o.stackR, targets: ALS.map((al) => tg[al]), groupOf: (e) => tg[e.al], spot: (x) => STACK_AT[x.al], need: 6 });
   const tag = '殲滅爆擊';
   const end = castAt(G, s1 + 2, tag, o.cast, '全場即死：進 2P 的防禦力場（受傷減輕）', nameOf);
-  at(G, s1 + 2, () => { G.objs.push({ k: 'orb', x: SHIELD.x, y: SHIELD.y - o.shieldR - 1, r: 0.9, col: '#f1ecd8', until: end + 0.5, label: '2P' }); G.hints = [{ ...SHIELD, r: o.shieldR, label: '2P 的防禦力場' }]; });
+  at(G, s1 + 2, () => { G.objs.push({ k: 'orb', x: SHIELD.x, y: SHIELD.y - o.shieldR - 1, r: 0.9, col: '#ffffff', until: end + 0.5, label: '2P' }); G.hints = [{ ...SHIELD, r: o.shieldR, label: '2P 的防禦力場' }]; });
   at(G, s1 + 2 + REACT, () => npcs(G).forEach((e) => { e.mt = { x: SHIELD.x + G.rng.rnd(-3, 3), y: SHIELD.y + G.rng.rnd(-3, 3) }; }));
   at(G, end, () => {
     G.hints = [];
@@ -280,9 +280,9 @@ export const ninesee: Encounter = {
     }
     if (layer === 'top') {
       TANKS.forEach((p, i) => {
-        c.save(); c.fillStyle = i === s.tanks!.hacked ? '#7a2a2a' : '#4a463c'; c.strokeStyle = '#f1ecd8'; c.lineWidth = px(1.5);
+        c.save(); c.fillStyle = i === s.tanks!.hacked ? '#e6a3a9' : '#b3b9c1'; c.strokeStyle = '#3b4049'; c.lineWidth = px(1.5);
         c.fillRect(p.x - 2.5, p.y - 2.5, 5, 5); c.strokeRect(p.x - 2.5, p.y - 2.5, 5, 5); c.restore();
-        text(c, i === s.tanks!.hacked ? '被駭入' : '大型戰車', p.x, p.y, 11, '#f1ecd8', 700);
+        text(c, i === s.tanks!.hacked ? '被駭入' : '大型戰車', p.x, p.y, 11, '#1f2329', 700);
         if (i === s.tanks!.hacked) { c.save(); c.strokeStyle = '#ff5d6c'; c.lineWidth = px(2); circle(c, p.x, p.y, 3.6); c.stroke(); c.restore(); }
       });
     }

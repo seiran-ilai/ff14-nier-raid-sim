@@ -42,7 +42,7 @@ body.nosides:not(.mobile) .main{grid-template-columns:minmax(0,1fr);grid-templat
 body.nosides:not(.mobile) .main .sl,body.nosides:not(.mobile) .main .sr{display:none}
 body.nosides:not(.mobile) .stage{max-width:min(1100px,max(440px,calc(100vh - 130px)))}
 /* 側欄收起時機制提示卡看不到：詠唱提示與王台詞照樣顯示在遊戲畫面上 */
-body.nosides:not(.mobile) .casttip{display:block}
+body.nosides:not(.mobile) .casttip{display:flex}
 body.nosides:not(.mobile) .bossline{display:flex}
 @media (max-width:720px){.main{grid-template-columns:minmax(0,1fr);grid-template-areas:"sc" "sr" "sl"}}
 /* 機制提示卡（右欄最上面）：固定高度、內容在卡片裡捲動，出現提示時不會把下面的卡片擠下去 */
@@ -109,7 +109,7 @@ body.mobile .stage{max-width:100%}
 .tipnow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:18px}
 .tipnow b{font-family:var(--f-display);color:var(--gold-2)}
 .tipnow span{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
-.tiptext{margin:0;font-size:15px;font-weight:700;line-height:1.5;color:#8a5a00}
+.tiptext{margin:0;display:flex;gap:8px;align-items:baseline;font-size:15px;font-weight:700;line-height:1.5;color:var(--fg)}
 .tipalert{margin:0;font-size:15px;font-weight:900;color:var(--gold-2)}
 .tipalert.danger{color:var(--ng)}
 .tipline{margin:0;font-size:14px;display:flex;flex-direction:column;gap:2px;border-left:3px solid var(--gold);padding-left:8px}

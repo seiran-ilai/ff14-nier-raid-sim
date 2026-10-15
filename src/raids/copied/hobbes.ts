@@ -261,23 +261,23 @@ export const hobbes: Encounter = {
     if (layer === 'floor') {
       // 北牆與 8 個噴頭
       c.save();
-      c.fillStyle = '#3a372e'; c.fillRect(-H - 1, T.wallY - 2.2, H * 2 + 2, 2.2);
+      c.fillStyle = '#59606a'; c.fillRect(-H - 1, T.wallY - 2.2, H * 2 + 2, 2.2);
       for (let i = 0; i < 8; i++) {
         const x = -12.25 + i * 3.5, lit = !!s.fire && G.t < s.fire.until && s.fire.lit.includes(i);
-        c.fillStyle = lit ? '#ff7a2a' : '#6e6853';
+        c.fillStyle = lit ? '#ff7a2a' : '#b3b9c1';
         c.beginPath(); c.arc(x, T.wallY - 1.1, lit ? 0.9 + 0.15 * Math.sin(G.t * 12 + i) : 0.6, 0, Math.PI * 2); c.fill();
       }
       c.restore();
       if (s.roll && G.t < s.roll.until) {
-        for (let y = -9; y <= 9; y += 6) for (let x = -8; x <= 8; x += 8) text(c, s.roll.dir > 0 ? '▶' : '◀', x, y, 18, 'rgba(255,211,107,.8)');
+        for (let y = -9; y <= 9; y += 6) for (let x = -8; x <= 8; x += 8) text(c, s.roll.dir > 0 ? '▶' : '◀', x, y, 18, 'rgba(196,130,0,.75)');
       }
     } else {
       if (s.box && G.t < s.box) {
-        c.save(); c.fillStyle = 'rgba(110,104,83,.9)'; c.strokeStyle = '#f1ecd8'; c.lineWidth = px(1.5);
+        c.save(); c.fillStyle = 'rgba(179,185,193,.92)'; c.strokeStyle = '#3b4049'; c.lineWidth = px(1.5);
         c.fillRect(-2.5, -2.5, 5, 5); c.strokeRect(-2.5, -2.5, 5, 5); c.restore();
-        text(c, '集裝箱', 0, 0, 11, '#f1ecd8', 700);
+        text(c, '集裝箱', 0, 0, 11, '#1f2329', 700);
       }
-      if (s.rot && G.t < s.rot.until) text(c, s.rot.dir > 0 ? '↻ 順時針' : '↺ 逆時針', 0, -6, 14, '#8bdcff');
+      if (s.rot && G.t < s.rot.until) text(c, s.rot.dir > 0 ? '↻ 順時針' : '↺ 逆時針', 0, -6, 14, '#2a78b8');
     }
   },
   loot: {

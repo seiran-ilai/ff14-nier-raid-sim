@@ -7,19 +7,21 @@
 body.mobile .stage{--barh:0px}
 .hud{position:absolute;pointer-events:none;font-family:var(--f-body)}
 /* 詠唱條（仿遊戲：技能名在左、剩餘秒數在右，下方金色條）：放大、置中在畫面上緣（不擋住王的手勢與自己） */
-.castwrap{top:10px;left:50%;transform:translateX(-50%);width:min(62%,500px);display:flex;flex-direction:column;gap:3px}
-.casthead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:0 2px}
-.castname{font-weight:900;font-size:clamp(18px,3vw,24px);letter-spacing:.06em;text-shadow:0 0 3px #fff,0 0 6px #fff;color:var(--fg)}
-.casttime{font-size:clamp(14px,2.2vw,17px);font-weight:700;color:var(--gold-2);font-variant-numeric:tabular-nums;text-shadow:0 0 3px #fff}
-.castbar{width:100%;height:12px;border-radius:2px;background:rgba(255,255,255,.8);border:1px solid var(--line-2);overflow:hidden}
-.castbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#9aa0a9,#3b4049)}
+.castwrap{top:10px;left:50%;transform:translateX(-50%);width:min(56%,480px);display:flex;flex-direction:column;gap:6px;background:var(--hud);border:1px solid var(--line);border-radius:10px;padding:8px 12px 10px;box-shadow:var(--hud-shadow)}
+.casthead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.castname{font-weight:800;font-size:clamp(16px,2.6vw,20px);letter-spacing:.04em;color:var(--fg)}
+.casttime{font-size:clamp(13px,2vw,15px);font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.castbar{width:100%;height:6px;border-radius:3px;background:var(--panel-2);overflow:hidden}
+.castbar i{display:block;height:100%;width:0;border-radius:3px;background:var(--gold)}
 /* 詠唱提示：詠唱條下方的處理方式 */
-.casttip{margin-top:4px;text-align:center;font-size:clamp(13px,2vw,16px);font-weight:700;line-height:1.4;color:#8a5a00;background:rgba(247,248,250,.92);border:1px solid var(--line);border-radius:6px;padding:4px 10px}
+/* 處理方式：前面一個「處理」小標籤 */
+.casttip::before,.gcap em::before,.tiptext::before{content:"處理";flex:none;font-size:11.5px;font-weight:700;letter-spacing:.06em;color:#1d5a8c;background:rgba(42,120,184,.12);border-radius:5px;padding:1px 6px}
+.casttip{display:flex;gap:8px;align-items:baseline;font-size:clamp(13px,1.8vw,14.5px);font-weight:600;line-height:1.45;color:var(--fg);padding-top:6px;border-top:1px solid var(--line)}
 /* 王台詞對話框 */
-.bossline{bottom:calc(var(--barh) + 90px);left:50%;transform:translateX(-50%);width:min(86%,520px);display:flex;flex-direction:column;gap:2px;font-size:15px;font-weight:700;color:var(--fg);background:rgba(247,248,250,.95);border:1px solid var(--line-2);border-radius:6px;padding:7px 14px 9px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
-.bossline .who{font-size:12px;color:var(--gold-2);letter-spacing:.1em}
-.alert{top:27%;left:50%;transform:translateX(-50%);width:max-content;max-width:90%;text-align:center;line-height:1.35;font-size:clamp(18px,3vw,26px);font-weight:900;color:var(--gold-2);background:rgba(247,248,250,.88);border:1px solid var(--line);border-radius:8px;padding:4px 12px}
-.alert.danger{color:var(--ng)}
+.bossline{bottom:calc(var(--barh) + 90px);left:50%;transform:translateX(-50%);width:min(86%,520px);display:flex;flex-direction:column;gap:2px;font-size:15px;font-weight:600;color:var(--fg);background:var(--hud);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:8px;padding:7px 14px 9px;box-shadow:var(--hud-shadow)}
+.bossline .who{font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:.1em}
+.alert{top:27%;left:50%;transform:translateX(-50%);width:max-content;max-width:90%;text-align:center;line-height:1.35;font-size:clamp(16px,2.6vw,22px);font-weight:800;color:var(--fg);background:var(--hud);border:1px solid var(--line);border-radius:10px;padding:6px 16px;box-shadow:var(--hud-shadow)}
+.alert.danger{color:var(--ng);border-color:rgba(196,49,63,.45);background:#fff5f6}
 /* 增減益圖示列：自己的減益放大、紅框，剩 5 秒內閃爍 */
 .status{top:10px;left:10px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;max-width:38%}
 .ico{display:flex;flex-direction:column;align-items:center;width:36px}
@@ -45,7 +47,7 @@ body.mobile .stage{--barh:0px}
 .checks .rp{color:var(--accent);font-size:12px;margin-left:6px;white-space:nowrap}
 .endseed{font-size:12.5px;color:var(--muted)}
 .endseed b{color:var(--fg);font-variant-numeric:tabular-nums}
-.tr{top:10px;right:10px;font-size:12px;color:var(--muted);text-align:right;background:rgba(247,248,250,.85);border-radius:7px;padding:3px 8px;display:flex;flex-direction:column;gap:1px}
+.tr{top:10px;right:10px;font-size:12px;color:var(--muted);text-align:right;background:var(--hud);border:1px solid var(--line);border-radius:8px;padding:4px 10px;display:flex;flex-direction:column;gap:1px}
 .tr b{color:var(--fg);font-variant-numeric:tabular-nums}
 .toast{bottom:calc(var(--barh) + 10px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px}
 .toast div{background:rgba(70,14,26,.86);border:1px solid var(--ng);color:#ffd4d9;font-weight:700;font-size:13px;border-radius:8px;padding:3px 10px;white-space:nowrap}
@@ -80,7 +82,8 @@ body.mobile .stage{--barh:0px}
 .startbtn span{font-size:12.5px;line-height:1.4;opacity:.85}
 .startbtn[data-mode="continue"],.startbtn[data-demo]{background:transparent;color:var(--fg);border-color:var(--line)}
 .startbtn:hover{filter:brightness(1.08)}
-.startbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.startbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
 /* 雙王時詠唱條顯示是誰在詠唱 */
-.castname small{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-2)}
+.castname small{display:block;font-size:11.5px;font-weight:700;letter-spacing:.08em;color:var(--muted)}
 .castname small:empty{display:none}

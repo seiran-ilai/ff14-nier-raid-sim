@@ -38,7 +38,7 @@ function drawMarker(c: CanvasRenderingContext2D, e: Entity, x: number, y: number
       text(c, m.label ?? '', x, hy, 13, '#ffd36b');
       break;
   }
-  if (m.label && m.kind !== 'num') text(c, m.label, x, hy - 1.1, 11, '#ffe6a3', 700);
+  if (m.label && m.kind !== 'num') text(c, m.label, x, hy - 1.1, 11, '#8a5a00', 700);
 }
 
 export function drawEnt(c: CanvasRenderingContext2D, e: Entity, G: RenderState, alpha: number, mark = true): void {

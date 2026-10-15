@@ -192,7 +192,7 @@ function collapse(G: GameState, t0: number): number {
   const me = claim(G, t0), o = T.collapse;
   const P: Vec = { x: -17, y: -17 };
   const end = castAt(G, t0, '崩落', o.cast, '到石柱旁邊，被擊退到斜對角；之後石柱倒下（影子不代表方向），看清楚方向躲開', '開花的神明');
-  at(G, t0, () => G.objs.push({ k: 'orb', ...P, r: 1.8, col: '#8f8870', until: end + 6, label: '石柱' }));
+  at(G, t0, () => G.objs.push({ k: 'orb', ...P, r: 1.8, col: '#9aa0a9', until: end + 6, label: '石柱' }));
   const near = (e: Entity): Vec => { const i = ALS.indexOf(e.al) * 8 + ROLES.indexOf(e.role); return { x: P.x + 3 + (i % 5) * 0.9, y: P.y + 3 + Math.floor(i / 5) * 0.9 }; };
   knockback(G, end, { tag: '衝擊波', show: o.cast, from: P, dist: o.kb, spot: near, fix: () => ({ x: -12, y: -12, r: 2, label: '石柱旁邊' }) });
   // 被擊退到斜對角後就停在那裡（不要走回石柱旁）
@@ -283,7 +283,7 @@ export const idol: Encounter = {
     if (!s || !b) return;
     if (s.wheel && G.t < s.wheel.until) text(c, s.wheel.k === 'ccw' ? '↺ 圓環向左轉' : '↻ 圓環向右轉', b.x, b.y + 7, 14, '#ffd36b');
     if (s.arm && G.t < s.arm.until) text(c, s.arm.k === 'hands' ? '石塊凝結在雙手（兩根石柱）' : '石塊凝結在身下（一根石柱）', b.x, b.y + 7, 13, '#ffd36b');
-    if (s.ring && G.t < s.ring.until) text(c, s.ring.c === 'black' ? '● 黑環' : '○ 白環', 0, 0, 16, s.ring.c === 'black' ? '#c8c1a6' : '#ffffff');
+    if (s.ring && G.t < s.ring.until) text(c, s.ring.c === 'black' ? '● 黑環' : '○ 白環', 0, 0, 16, s.ring.c === 'black' ? '#1f2329' : '#ffffff');
   },
   loot: {
     currency: [[TOMES.詩學, 40], [TOMES.數理, 45], [TOMES.記憶, 15]],

@@ -183,7 +183,7 @@ export const knave: Encounter = {
     const s = G.x.knave as KnaveState | undefined;
     if (!s) return;
     if (layer === 'floor' && s.blocks && G.t < s.blocks.until) {
-      c.save(); c.fillStyle = '#f1ecd8'; c.strokeStyle = '#4a463c'; c.lineWidth = px(1.5);
+      c.save(); c.fillStyle = '#ffffff'; c.strokeStyle = '#3b4049'; c.lineWidth = px(1.5);
       BLOCKS.forEach((b) => { c.fillRect(b.x - T.leap.block / 2, b.y - T.leap.block / 2, T.leap.block, T.leap.block); c.strokeRect(b.x - T.leap.block / 2, b.y - T.leap.block / 2, T.leap.block, T.leap.block); });
       c.restore();
       if (s.charge && G.t < s.charge.until) text(c, s.charge.from < 0 ? '◀ 衝撞從西邊來' : '衝撞從東邊來 ▶', 0, 18, 14, '#ff9aa4');

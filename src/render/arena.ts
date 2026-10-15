@@ -66,8 +66,8 @@ export function drawObj(c: CanvasRenderingContext2D, o: FieldObj, G: RenderState
   } else {
     c.fillStyle = o.col; c.globalAlpha = 0.85;
     circle(c, o.x, o.y, o.r); c.fill();
-    c.globalAlpha = 1; c.strokeStyle = '#fff'; c.lineWidth = px(1.5); c.stroke();
-    if (o.label) text(c, o.label, o.x, o.y - o.r - 0.9, 11, '#fff', 700);
+    c.globalAlpha = 1; c.strokeStyle = '#3b4049'; c.lineWidth = px(1.5); c.stroke();
+    if (o.label) text(c, o.label, o.x, o.y - o.r - 0.9, 11, '#1f2329', 700);
   }
   c.restore();
 }

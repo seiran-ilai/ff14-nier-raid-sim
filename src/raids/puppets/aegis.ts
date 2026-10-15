@@ -97,7 +97,7 @@ function airRaid(G: GameState, t0: number): number {
   const units: Vec[] = [0, 1, 2].map((i) => polar(C0, deg(G.rng.rnd(0, 120) + i * 120), H * 1.2));
   const t = end + 1;
   at(G, t - o.show, () => {
-    units.forEach((u) => G.objs.push({ k: 'orb', ...u, r: 1.5, col: '#8f8870', until: t + 0.3, label: '飛行裝置' }));
+    units.forEach((u) => G.objs.push({ k: 'orb', ...u, r: 1.5, col: '#9aa0a9', until: t + 0.3, label: '飛行裝置' }));
     const shapes: Shape[] = units.map((u) => {
       const near = present(G).reduce((a, b) => (Math.hypot(b.x - u.x, b.y - u.y) < Math.hypot(a.x - u.x, a.y - u.y) ? b : a));
       return { k: 'rect', O: u, H: Math.atan2(near.x - u.x, -(near.y - u.y)), len: 60, w: o.w };

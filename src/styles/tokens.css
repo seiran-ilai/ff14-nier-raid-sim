@@ -3,6 +3,8 @@
   --bg:#e9ebee; --panel:#f7f8fa; --panel-2:#dfe2e6; --line:#bcc1c8; --line-2:#9aa0a9; --fg:#1f2329; --muted:#59606a;
   --gold:#3b4049; --gold-2:#262a30; --accent:#59616c; --on-gold:#f4f6f8; --sel:#d2d6dc;
   --ok:#1b8455; --ng:#c4313f; --blue:#2a78b8;
+  /* 疊在遊戲畫面上的卡片（詠唱、提示、台詞） */
+  --hud:rgba(255,255,255,.95); --hud-shadow:0 4px 14px rgba(20,24,30,.14);
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
   --f-display:"Noto Serif TC","Songti TC",serif;
   color-scheme:light;

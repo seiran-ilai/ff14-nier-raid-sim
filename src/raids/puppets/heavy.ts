@@ -175,7 +175,7 @@ function pods(G: GameState, t0: number): number {
   const P: Vec[] = [{ x: 0, y: -o.d }, { x: o.d, y: 0 }, { x: 0, y: o.d }, { x: -o.d, y: 0 }];
   const progs: Program[] = P.map(() => variant<Program>(G, 'prog', G.rng.chance(0.5) ? 'R010' : 'R030'));
   const shapes: Shape[] = P.map((p, i) => (progs[i] === 'R010' ? { k: 'rect', O: p, H: angTo(p, C0), len: o.d * 2, w: o.r010w } : { k: 'circle', x: p.x, y: p.y, r: o.r030 }));
-  at(G, t0, () => P.forEach((p, i) => G.objs.push({ k: 'orb', x: p.x * 0.85, y: p.y * 0.85, r: 1.3, col: '#8f8870', until: end + 0.6, label: progs[i] })));
+  at(G, t0, () => P.forEach((p, i) => G.objs.push({ k: 'orb', x: p.x * 0.85, y: p.y * 0.85, r: 1.3, col: '#9aa0a9', until: end + 0.6, label: progs[i] })));
   aoe(G, end + 0.5, shapes, { tag, show: o.cast + 0.5, visible: 2, why: '站在輔助機程序的範圍裡（受傷加重）', ok: '躲在兩台輔助機中間的角落' });
   settle(G, end + 0.9, me);
   return end + 1.5;
