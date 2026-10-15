@@ -7,13 +7,6 @@
   --f-display:"Noto Serif TC","Songti TC",serif;
   color-scheme:light;
 }
-/* 場地是畫在深底上的：疊在場地上的詠唱條、提示、增減益、右上資訊與教學動態圖維持深色系；選單、技能列、回放用淺色 */
-.castwrap,.bossline,.alert,.status,.tr,.toast,.gstage{
-  --bg:#1a1916; --panel:#23211d; --panel-2:#2e2b25; --line:#4a463c; --line-2:#6e6853; --fg:#ece6d0; --muted:#a8a28c;
-  --gold:#dad4bb; --gold-2:#f1ecd8; --accent:#cdb87a; --on-gold:#2b2924; --sel:#3a372e;
-  --ok:#43df9f; --ng:#ff5d6c; --blue:#5cc8ff;
-  color-scheme:dark; color:var(--fg);
-}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 html,body{background:var(--bg);color:var(--fg)}

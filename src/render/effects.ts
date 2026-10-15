@@ -16,7 +16,7 @@ export function drawFx(c: CanvasRenderingContext2D, f: Effect, G: RenderState): 
       break;
     case 'kb':
     case 'pull': {
-      c.strokeStyle = f.k === 'kb' ? '#8bdcff' : '#ff7a8a'; c.lineWidth = px(2.5);
+      c.strokeStyle = f.k === 'kb' ? '#2a78b8' : '#d0344a'; c.lineWidth = px(2.5);
       for (let i = 0; i < 8; i++) {
         const v = dirV((i * Math.PI) / 4), a1 = f.k === 'kb' ? 4 : 12, a2 = f.k === 'kb' ? 10 : 6;
         c.beginPath(); c.moveTo(f.x + v.x * a1, f.y + v.y * a1); c.lineTo(f.x + v.x * a2, f.y + v.y * a2); c.stroke();
@@ -24,7 +24,7 @@ export function drawFx(c: CanvasRenderingContext2D, f: Effect, G: RenderState): 
       break;
     }
     case 'stack':
-      c.fillStyle = 'rgba(242,201,76,.35)'; c.strokeStyle = '#f2c94c'; c.lineWidth = px(2);
+      c.fillStyle = 'rgba(242,190,40,.35)'; c.strokeStyle = '#c9971a'; c.lineWidth = px(2);
       circle(c, f.x, f.y, f.r); c.fill(); c.stroke();
       break;
     case 'tether': {

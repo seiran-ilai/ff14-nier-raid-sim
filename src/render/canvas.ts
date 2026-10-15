@@ -62,10 +62,20 @@ export function text(c: CanvasRenderingContext2D, s: string, x: number, y: numbe
   c.textAlign = 'center';
   c.textBaseline = 'middle';
   c.lineWidth = px(3.5);
-  c.strokeStyle = 'rgba(0,0,0,.85)';
+  c.strokeStyle = isLight(col) ? 'rgba(0,0,0,.85)' : 'rgba(255,255,255,.9)';
   c.strokeText(s, x, y);
   c.fillStyle = col;
   c.fillText(s, x, y);
+}
+
+/** 顏色是不是淺色（文字描邊用：淺色字描黑邊、深色字描白邊） */
+function isLight(col: string): boolean {
+  const m = /^#([0-9a-f]{6}|[0-9a-f]{3})\b/i.exec(col), n = /rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(col);
+  let rgb: number[];
+  if (m) { const h = m[1].length === 3 ? [...m[1]].map((d) => d + d).join('') : m[1]; rgb = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)); }
+  else if (n) rgb = [n[1], n[2], n[3]].map(Number);
+  else return true;
+  return 0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2] > 140;
 }
 
 /** 場地外框路徑 */

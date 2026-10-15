@@ -40,16 +40,16 @@ export function shapePath(c: CanvasRenderingContext2D, t: Shape): void {
 }
 
 const COLS = {
-  orange: { fill: '255,128,48', edge: '255,190,120' },
-  blue: { fill: '92,200,255', edge: '190,235,255' },
-  purple: { fill: '180,90,255', edge: '225,190,255' },
+  orange: { fill: '255,118,30', edge: '214,84,10' },
+  blue: { fill: '60,170,240', edge: '24,120,200' },
+  purple: { fill: '170,80,250', edge: '128,50,210' },
 };
 
 /** 填色＋邊緣由內往外漸亮（多層描邊） */
 function glowFill(c: CanvasRenderingContext2D, t: Shape, col: { fill: string; edge: string }, a: number): void {
   const eo = t.k === 'ring';
   shapePath(c, t);
-  c.fillStyle = `rgba(${col.fill},${0.22 * a})`;
+  c.fillStyle = `rgba(${col.fill},${0.26 * a})`;
   if (eo) c.fill('evenodd'); else c.fill();
   c.save();
   if (eo) c.clip('evenodd'); else c.clip();
@@ -72,7 +72,7 @@ export function drawTele(c: CanvasRenderingContext2D, t: Telegraph, now: number)
   c.restore();
 }
 
-const ZONE_COL = { fire: ['255,110,40', '255,170,90'], elec: ['120,190,255', '200,235,255'], purple: ['170,90,255', '220,180,255'] } as const;
+const ZONE_COL = { fire: ['255,100,30', '214,74,10'], elec: ['80,170,250', '24,120,200'], purple: ['170,80,250', '128,50,210'] } as const;
 
 /** 持續性地面區域（火焰、帶電）：還沒生效時畫虛線外框，生效後填色並閃動 */
 export function drawZone(c: CanvasRenderingContext2D, z: Zone, now: number): void {
@@ -95,7 +95,7 @@ export function drawZone(c: CanvasRenderingContext2D, z: Zone, now: number): voi
 export function drawBurst(c: CanvasRenderingContext2D, t: Telegraph, k: number): void {
   const a = Math.max(0, 1 - k);
   c.save();
-  c.fillStyle = t.col === 'blue' ? `rgba(200,240,255,${0.55 * a})` : `rgba(255,220,170,${0.6 * a})`;
+  c.fillStyle = t.col === 'blue' ? `rgba(60,170,240,${0.5 * a})` : `rgba(255,130,50,${0.55 * a})`;
   shapePath(c, t);
   if (t.k === 'ring') c.fill('evenodd'); else c.fill();
   c.restore();

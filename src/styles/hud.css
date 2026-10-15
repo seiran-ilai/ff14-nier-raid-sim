@@ -9,28 +9,28 @@ body.mobile .stage{--barh:0px}
 /* 詠唱條（仿遊戲：技能名在左、剩餘秒數在右，下方金色條）：放大、置中在畫面上緣（不擋住王的手勢與自己） */
 .castwrap{top:10px;left:50%;transform:translateX(-50%);width:min(62%,500px);display:flex;flex-direction:column;gap:3px}
 .casthead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:0 2px}
-.castname{font-weight:900;font-size:clamp(18px,3vw,24px);letter-spacing:.06em;text-shadow:0 1px 3px #000,0 0 8px #000;color:#fff}
-.casttime{font-size:clamp(14px,2.2vw,17px);font-weight:700;color:var(--gold-2);font-variant-numeric:tabular-nums;text-shadow:0 1px 2px #000}
-.castbar{width:100%;height:12px;border-radius:2px;background:rgba(0,0,0,.7);border:1px solid rgba(218,212,187,.75);box-shadow:0 0 6px rgba(0,0,0,.8);overflow:hidden}
-.castbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#8f8870,#dad4bb 70%,#fffbe8);box-shadow:0 0 8px rgba(255,214,120,.8)}
+.castname{font-weight:900;font-size:clamp(18px,3vw,24px);letter-spacing:.06em;text-shadow:0 0 3px #fff,0 0 6px #fff;color:var(--fg)}
+.casttime{font-size:clamp(14px,2.2vw,17px);font-weight:700;color:var(--gold-2);font-variant-numeric:tabular-nums;text-shadow:0 0 3px #fff}
+.castbar{width:100%;height:12px;border-radius:2px;background:rgba(255,255,255,.8);border:1px solid var(--line-2);overflow:hidden}
+.castbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#9aa0a9,#3b4049)}
 /* 詠唱提示：詠唱條下方的處理方式 */
-.casttip{margin-top:4px;text-align:center;font-size:clamp(13px,2vw,16px);font-weight:700;line-height:1.4;color:#ffe6a3;background:rgba(16,15,12,.78);border:1px solid rgba(218,212,187,.45);border-radius:6px;padding:4px 10px;text-shadow:0 1px 2px #000}
+.casttip{margin-top:4px;text-align:center;font-size:clamp(13px,2vw,16px);font-weight:700;line-height:1.4;color:#8a5a00;background:rgba(247,248,250,.92);border:1px solid var(--line);border-radius:6px;padding:4px 10px}
 /* 王台詞對話框 */
-.bossline{bottom:calc(var(--barh) + 90px);left:50%;transform:translateX(-50%);width:min(86%,520px);display:flex;flex-direction:column;gap:2px;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(rgba(30,28,23,.92),rgba(16,15,12,.92));border:1px solid rgba(218,212,187,.55);border-radius:6px;padding:7px 14px 9px;box-shadow:0 4px 16px rgba(0,0,0,.6)}
+.bossline{bottom:calc(var(--barh) + 90px);left:50%;transform:translateX(-50%);width:min(86%,520px);display:flex;flex-direction:column;gap:2px;font-size:15px;font-weight:700;color:var(--fg);background:rgba(247,248,250,.95);border:1px solid var(--line-2);border-radius:6px;padding:7px 14px 9px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .bossline .who{font-size:12px;color:var(--gold-2);letter-spacing:.1em}
-.alert{top:27%;left:50%;transform:translateX(-50%);width:max-content;max-width:90%;text-align:center;line-height:1.35;font-size:clamp(18px,3vw,26px);font-weight:900;color:var(--gold-2);background:rgba(16,15,12,.55);border-radius:8px;padding:4px 12px;text-shadow:0 0 2px #000,0 2px 8px #000,0 0 18px rgba(0,0,0,.8)}
-.alert.danger{color:#ff9aa4}
+.alert{top:27%;left:50%;transform:translateX(-50%);width:max-content;max-width:90%;text-align:center;line-height:1.35;font-size:clamp(18px,3vw,26px);font-weight:900;color:var(--gold-2);background:rgba(247,248,250,.88);border:1px solid var(--line);border-radius:8px;padding:4px 12px}
+.alert.danger{color:var(--ng)}
 /* 增減益圖示列：自己的減益放大、紅框，剩 5 秒內閃爍 */
 .status{top:10px;left:10px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:6px;max-width:38%}
 .ico{display:flex;flex-direction:column;align-items:center;width:36px}
 .ico b{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;font-size:16px;font-weight:900;color:#fff;text-shadow:0 1px 2px #000}
-.ico span{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 1px 2px #000,0 0 4px #000}
-.ico em{font-style:normal;font-size:10.5px;color:var(--muted);white-space:nowrap;text-shadow:0 1px 2px #000}
+.ico span{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--fg);text-shadow:0 0 3px #fff,0 0 3px #fff}
+.ico em{font-style:normal;font-size:10.5px;color:var(--muted);white-space:nowrap;text-shadow:0 0 3px #fff}
 .ico.buff b{background:linear-gradient(#2f8a63,#185a3e);border:1px solid #7ef0c0}
 .ico.debuff b{background:linear-gradient(#8a2f3a,#4a1820);border:1px solid #ff9aa4}
 .ico.mine{width:46px}
 .ico.mine b{width:42px;height:42px;font-size:20px;border:2px solid #ff5d6c;box-shadow:0 0 0 2px rgba(255,93,108,.35),0 0 12px rgba(255,93,108,.6)}
-.ico.mine span{font-size:14px;color:#ffd4d9}
+.ico.mine span{font-size:14px;color:var(--ng)}
 .ico.urgent b{animation:urgent .5s steps(2) infinite}
 @keyframes urgent{50%{box-shadow:0 0 0 3px #ff5d6c,0 0 18px #ff5d6c}}
 @media (prefers-reduced-motion:reduce){.ico.urgent b{animation:none}}
@@ -45,7 +45,7 @@ body.mobile .stage{--barh:0px}
 .checks .rp{color:var(--accent);font-size:12px;margin-left:6px;white-space:nowrap}
 .endseed{font-size:12.5px;color:var(--muted)}
 .endseed b{color:var(--fg);font-variant-numeric:tabular-nums}
-.tr{top:10px;right:10px;font-size:12px;color:var(--muted);text-align:right;background:rgba(16,15,12,.6);border-radius:7px;padding:3px 8px;display:flex;flex-direction:column;gap:1px}
+.tr{top:10px;right:10px;font-size:12px;color:var(--muted);text-align:right;background:rgba(247,248,250,.85);border-radius:7px;padding:3px 8px;display:flex;flex-direction:column;gap:1px}
 .tr b{color:var(--fg);font-variant-numeric:tabular-nums}
 .toast{bottom:calc(var(--barh) + 10px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px}
 .toast div{background:rgba(70,14,26,.86);border:1px solid var(--ng);color:#ffd4d9;font-weight:700;font-size:13px;border-radius:8px;padding:3px 10px;white-space:nowrap}
@@ -55,7 +55,7 @@ body.mobile .stage{--barh:0px}
 .slot kbd{position:absolute;top:2px;left:4px;font-size:10.5px;color:var(--gold-2);font-family:var(--f-body)}
 .slot .cd{position:absolute;inset:0;background:conic-gradient(rgba(0,0,0,.72) var(--p,0%),transparent 0);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;text-shadow:0 1px 2px #000}
 .slot.active{box-shadow:0 0 0 2px var(--ok) inset}
-.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(12,11,9,.62);pointer-events:auto}
+.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(40,44,52,.32);pointer-events:auto}
 .ocard{background:var(--panel);box-shadow:0 8px 28px rgba(0,0,0,.4);border:1px solid var(--line);border-radius:14px;padding:18px 20px;width:min(92%,500px);display:flex;flex-direction:column;gap:10px;max-height:92%;overflow:auto}
 .ocard h2{margin:0;font-family:var(--f-display);font-size:24px}
 .ocard.ok h2{color:var(--ok)} .ocard.ng h2{color:var(--ng)}

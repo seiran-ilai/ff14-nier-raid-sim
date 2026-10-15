@@ -54,13 +54,13 @@ export function drawEnt(c: CanvasRenderingContext2D, e: Entity, G: RenderState, 
   const fr = me ? 3.2 : 1.8;
   const a0 = face - Math.PI / 2 - Math.PI / 4, a1 = face - Math.PI / 2 + Math.PI / 4;
   const g = c.createRadialGradient(x, y, r * 0.6, x, y, fr);
-  const fc = e.dead ? '120,120,120' : me ? '255,255,255' : '220,220,235';
-  g.addColorStop(0, `rgba(${fc},${me ? 0.42 : 0.2})`);
+  const fc = e.dead ? '120,120,120' : me ? '20,24,30' : '60,66,75';
+  g.addColorStop(0, `rgba(${fc},${me ? 0.35 : 0.16})`);
   g.addColorStop(1, `rgba(${fc},0)`);
   c.fillStyle = g;
   c.beginPath(); c.moveTo(x, y); c.arc(x, y, fr, a0, a1); c.closePath(); c.fill();
   if (me) {
-    c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = px(1.2);
+    c.strokeStyle = 'rgba(20,24,30,.5)'; c.lineWidth = px(1.2);
     c.beginPath(); c.moveTo(x, y); c.arc(x, y, fr, a0, a1); c.closePath(); c.stroke();
   }
 
@@ -75,7 +75,7 @@ export function drawEnt(c: CanvasRenderingContext2D, e: Entity, G: RenderState, 
   c.fillStyle = e.dead ? '#444' : stone ? '#8d8d8d' : col;
   c.fill();
   c.lineWidth = px(me ? 3 : 1.2);
-  c.strokeStyle = me ? '#fff' : '#0b0a12';
+  c.strokeStyle = me ? '#14181e' : 'rgba(20,24,30,.7)';
   c.stroke();
   if (stone) {
     c.strokeStyle = '#3c3c3c'; c.lineWidth = px(1.5);
@@ -88,18 +88,18 @@ export function drawEnt(c: CanvasRenderingContext2D, e: Entity, G: RenderState, 
 
   // 面向指示
   const v = dirV(face), L = r + (me ? 1.1 : 0.6);
-  c.strokeStyle = me ? '#fff' : 'rgba(255,255,255,.75)';
+  c.strokeStyle = me ? '#14181e' : 'rgba(20,24,30,.6)';
   c.lineWidth = px(me ? 3 : 1.5);
   c.beginPath(); c.moveTo(x + v.x * r * 0.4, y + v.y * r * 0.4); c.lineTo(x + v.x * L, y + v.y * L); c.stroke();
 
   // 判定圈（實際判定大小）
-  if (me) { c.strokeStyle = '#ffe28a'; c.lineWidth = px(1.5); circle(c, x, y, HIT); c.stroke(); }
+  if (me) { c.strokeStyle = '#c98a00'; c.lineWidth = px(1.5); circle(c, x, y, HIT); c.stroke(); }
 
   if (stunned) {
     for (let i = 0; i < 3; i++) { const a = G.t * 4 + (i * 2 * Math.PI) / 3; c.fillStyle = '#ffe066'; circle(c, x + Math.cos(a) * 1.1, y - r - 0.8 + Math.sin(a) * 0.35, 0.22); c.fill(); }
   }
-  if (has(G, e, 'akb')) { c.strokeStyle = '#43df9f'; c.lineWidth = px(2); circle(c, x, y, r + 0.5); c.stroke(); }
+  if (has(G, e, 'akb')) { c.strokeStyle = '#1b9a63'; c.lineWidth = px(2); circle(c, x, y, r + 0.5); c.stroke(); }
   drawMarker(c, e, x, y, r, G);
-  if (me) text(c, stone ? '石化' : '你', x, y - 2.4, 13, stone ? '#cfcfcf' : '#fff');
+  if (me) text(c, stone ? '石化' : '你', x, y - 2.4, 13, stone ? '#59606a' : '#14181e');
   c.restore();
 }

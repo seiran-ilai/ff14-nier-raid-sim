@@ -3,7 +3,7 @@ import type { Config } from '../core/config';
 import type { Fix, RenderState } from '../game/state';
 import { dirV } from '../core/geometry';
 import { view, px, text, circle, setCamera, worldTransform, lerp } from './canvas';
-import { drawArena, drawBoss, drawObj } from './arena';
+import { BG, drawArena, drawBoss, drawObj } from './arena';
 import { drawTele, drawZone } from './telegraphs';
 import { drawFx } from './effects';
 import { drawEnt } from './entities';
@@ -27,7 +27,7 @@ export function draw(G: RenderState | null, cfg: Config, opts: DrawOpts = {}): v
   const P = G.player;
   setCamera(cfg.cam, { x: lerp(P.px, P.x, alpha), y: lerp(P.py, P.y, alpha) }, G.arena, cfg.zoom);
   c.setTransform(1, 0, 0, 1, 0, 0);
-  c.fillStyle = '#0c0b09';
+  c.fillStyle = BG;
   c.fillRect(0, 0, cv.width, cv.height);
   worldTransform(c);
   drawArena(c, G);
@@ -37,10 +37,10 @@ export function draw(G: RenderState | null, cfg: Config, opts: DrawOpts = {}): v
       c.save();
       if (h.r) {
         c.setLineDash([px(6), px(5)]);
-        c.strokeStyle = '#43df9f'; c.fillStyle = 'rgba(67,223,159,.12)'; c.lineWidth = px(2);
+        c.strokeStyle = '#1b9a63'; c.fillStyle = 'rgba(27,154,99,.12)'; c.lineWidth = px(2);
         circle(c, h.x, h.y, h.r); c.fill(); c.stroke();
       }
-      if (h.label) text(c, h.label, h.x, h.y - (h.r || 0) - 1.3, 12, '#43df9f', 700);
+      if (h.label) text(c, h.label, h.x, h.y - (h.r || 0) - 1.3, 12, '#1b9a63', 700);
       c.restore();
     });
   }
@@ -56,7 +56,7 @@ export function draw(G: RenderState | null, cfg: Config, opts: DrawOpts = {}): v
   if (opts.moveTo) {
     const m = opts.moveTo;
     c.save();
-    c.strokeStyle = '#8bdcff'; c.lineWidth = px(2);
+    c.strokeStyle = '#2a78b8'; c.lineWidth = px(2);
     circle(c, m.x, m.y, 0.7); c.stroke();
     c.beginPath(); c.moveTo(m.x - 0.4, m.y - 0.4); c.lineTo(m.x + 0.4, m.y + 0.4); c.moveTo(m.x + 0.4, m.y - 0.4); c.lineTo(m.x - 0.4, m.y + 0.4); c.stroke();
     c.restore();
@@ -72,16 +72,16 @@ export function draw(G: RenderState | null, cfg: Config, opts: DrawOpts = {}): v
 function drawFix(c: CanvasRenderingContext2D, f: Fix): void {
   c.save();
   const r = f.r ?? 1.2;
-  c.strokeStyle = '#43df9f'; c.fillStyle = 'rgba(67,223,159,.22)'; c.lineWidth = px(3);
+  c.strokeStyle = '#1b9a63'; c.fillStyle = 'rgba(27,154,99,.2)'; c.lineWidth = px(3);
   circle(c, f.x, f.y, r); c.fill(); c.stroke();
   if (f.face != null) {
     const v = dirV(f.face), L = r + 2.4;
-    c.strokeStyle = '#43df9f'; c.lineWidth = px(4); c.lineCap = 'round';
+    c.strokeStyle = '#1b9a63'; c.lineWidth = px(4); c.lineCap = 'round';
     c.beginPath(); c.moveTo(f.x, f.y); c.lineTo(f.x + v.x * L, f.y + v.y * L); c.stroke();
     const n = { x: -v.y, y: v.x }, tip = { x: f.x + v.x * L, y: f.y + v.y * L };
-    c.fillStyle = '#43df9f';
+    c.fillStyle = '#1b9a63';
     c.beginPath(); c.moveTo(tip.x + v.x * 0.9, tip.y + v.y * 0.9); c.lineTo(tip.x + n.x * 0.7, tip.y + n.y * 0.7); c.lineTo(tip.x - n.x * 0.7, tip.y - n.y * 0.7); c.closePath(); c.fill();
   }
-  text(c, `正確：${f.label}`, f.x, f.y - r - 1.6, 13, '#43df9f');
+  text(c, `正確：${f.label}`, f.x, f.y - r - 1.6, 13, '#1b9a63');
   c.restore();
 }
