@@ -125,6 +125,8 @@ export function stack(G: GameState, t: number, o: StackOpts): void {
     const count = new Map(o.targets.map((tg) => [tg, all.filter((e) => hitCircle(e, tg, o.r)).length]));
     all.forEach((e) => {
       const g = o.groupOf ? o.groupOf(e) : null;
+      // groupOf 回傳 null＝這個人不用分攤（例如同時被點名去分散的人）
+      if (o.groupOf && !g) return;
       const inMine = g ? hitCircle(e, g, o.r) : o.targets.some((tg) => hitCircle(e, tg, o.r));
       const short = g && o.need ? (count.get(g) ?? 0) < o.need : false;
       const fix = g ? { x: g.x, y: g.y, r: o.r, label: g === e ? '你是分攤目標，等隊友過來' : '進分攤圈' } : undefined;

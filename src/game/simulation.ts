@@ -75,8 +75,8 @@ function moveBot(G: GameState, e: Entity, dt: number): void {
           // 直走會踩進地面區域（目標不在區域裡）：往左右偏轉繞過去
           let a = angOf(dx, dy);
           if (!inZone(G, tg, 0.1) && !inZone(G, e, 0.1)) {
-            const look = Math.min(d, 1.5);
-            const blocked = (b: number): boolean => inZone(G, { x: e.x + Math.sin(b) * look, y: e.y - Math.cos(b) * look }, 0.15);
+            const look = Math.min(d, 2);
+            const blocked = (b: number): boolean => inZone(G, { x: e.x + Math.sin(b) * look, y: e.y - Math.cos(b) * look }, 0.6);
             if (blocked(a)) {
               for (const k of [1, 2, 3, 4, 5, 6]) {
                 const off = (k * Math.PI) / 12;
