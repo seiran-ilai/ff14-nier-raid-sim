@@ -12,7 +12,7 @@ import type { Vec } from '../core/constants';
 import { hitShape, hitCircle, insideCircle, type Shape } from '../core/shapes';
 import { angDiff, angTo, dist } from '../core/geometry';
 import { onFloor } from '../core/arena';
-import { GAZE_ANGLE, REACT, TELE_SHOW } from '../core/tuning';
+import { GAZE_ANGLE, REACT, RUN, TELE_SHOW } from '../core/tuning';
 import { at, bossById, force, hasBuff, present, seqAdd, setCast, type Entity, type Fix, type GameState, type Telegraph, type Zone } from '../game/state';
 import { good, bad, hurtPlayer, botHit } from '../game/results';
 import { dodge, findSafe, npcs } from '../game/bots';
@@ -311,8 +311,8 @@ export function buster(G: GameState, t: number, o: BusterOpts): void {
 export interface LineStackOpts {
   tag: string;
   show?: number;
-  /** 直線起點（王的 id 或一個點） */
-  from: string | Vec;
+  /** 直線起點（王的 id、一個點，或依點名者決定，例如每隊從自己的王打出） */
+  from: string | Vec | ((target: Entity) => Vec);
   targets: Entity[];
   /** 每個人要進哪條線 */
   groupOf: (e: Entity) => Entity | null;
@@ -326,8 +326,8 @@ export interface LineStackOpts {
 /** 直線分攤：從王朝點名者打出直線，自己那組的人要站進線裡 */
 export function lineStack(G: GameState, t: number, o: LineStackOpts): void {
   const show = o.show ?? TELE_SHOW;
-  const src = (): Vec => (typeof o.from === 'string' ? bossById(G, o.from) : o.from);
-  const rectOf = (tg: Entity): Shape => { const s = src(); return { k: 'rect', O: s, H: angTo(s, tg), len: o.len, w: o.w }; };
+  const src = (tg: Entity): Vec => { const f = o.from; const p = typeof f === 'string' ? bossById(G, f) : typeof f === 'function' ? f(tg) : f; return { x: p.x, y: p.y }; };
+  const rectOf = (tg: Entity): Shape => { const s = src(tg); return { k: 'rect', O: s, H: angTo(s, tg), len: o.len, w: o.w }; };
   at(G, t - show, () => { o.targets.forEach((tg) => { tg.marker = { kind: 'target', until: t, label: '直線分攤' }; }); });
   at(G, t - show + REACT, () => npcs(G).forEach((e) => {
     const g = o.groupOf(e);
@@ -335,7 +335,7 @@ export function lineStack(G: GameState, t: number, o: LineStackOpts): void {
     const gp = o.spot ? o.spot(g) : { x: g.x, y: g.y };
     if (g === e) { e.mt = { ...gp }; return; }
     // 站在點名者後面（離王更遠一點），在線上
-    const s = src(), a = angTo(s, gp), d = dist(s, gp);
+    const s = src(g), a = angTo(s, gp), d = dist(s, gp);
     e.mt = { x: s.x + Math.sin(a) * (d + 1.5 + G.rng.rnd(0, 1.5)), y: s.y - Math.cos(a) * (d + 1.5 + G.rng.rnd(0, 1.5)) };
   }));
   let lines: Telegraph[] = [];
@@ -355,6 +355,52 @@ export function lineStack(G: GameState, t: number, o: LineStackOpts): void {
       } else if (!inMine || inOther) botHit(G, e, o.tag, inMine ? '吃到別隊的直線' : '沒進直線分攤');
     });
   });
+}
+
+/** Bot 從 pts[0] 出發，依序走過每個點（到了一個點就換下一個）；t 時從 pts[0] 往 pts[1] 出發 */
+export function walk(G: GameState, e: Entity, t: number, pts: Vec[]): void {
+  let tt = t;
+  for (let i = 1; i < pts.length; i++) {
+    const q = pts[i];
+    at(G, tt, () => { e.mt = { ...q }; });
+    tt += Math.hypot(q.x - pts[i - 1].x, q.y - pts[i - 1].y) / RUN - 0.05;
+  }
+}
+
+export interface ChaseOpts {
+  tag: string;
+  /** 被追的人 */
+  targets: Entity[];
+  /** 連炸幾次、間隔、落在幾秒前的位置（預兆也提前這麼多秒）、圓形半徑 */
+  n: number;
+  gap: number;
+  lag: number;
+  r: number;
+  /** 被追的人（Bot）要跑的路線：第一個點是起點 */
+  lane: (e: Entity) => Vec[];
+  /** 標記到第一發之間的秒數（Bot 先到起點） */
+  lead: number;
+  why?: string;
+}
+
+/** 追蹤型 AOE：追著點名者連炸 n 次（落在他 lag 秒前的位置）；被追的人要一直跑。回傳最後一發的時間 */
+export function chase(G: GameState, t0: number, o: ChaseOpts): number {
+  const tc = t0 + o.lead, last = tc + (o.n - 1) * o.gap;
+  at(G, t0, () => {
+    o.targets.forEach((e) => { e.marker = { kind: 'target', until: last, label: '追蹤' }; });
+    if (o.targets.includes(G.player)) G.hints = [{ ...o.lane(G.player)[0], r: 1.4, label: '從這裡開始跑' }];
+  });
+  at(G, t0 + REACT, () => o.targets.forEach((e) => { if (npcs(G).includes(e)) e.mt = { ...o.lane(e)[0] }; }));
+  o.targets.forEach((e) => { if (!e.isPlayer || G.auto) walk(G, e, tc - o.lag - 0.2, o.lane(e)); });
+  for (let i = 0; i < o.n; i++) {
+    const th = tc + i * o.gap;
+    at(G, th - o.lag, () => {
+      G.hints = [];
+      o.targets.forEach((e) => { if (!e.dead) aoe(G, th, { k: 'circle', x: e.x, y: e.y, r: o.r }, { tag: o.tag, show: o.lag, why: o.why ?? '被追蹤的 AOE 炸到', ok: null, dodge: false }); });
+    });
+  }
+  passIf(G, last + 0.05, o.tag, t0, '一直跑，躲開了追蹤 AOE');
+  return last;
 }
 
 export interface GazeOpts {
