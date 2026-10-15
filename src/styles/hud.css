@@ -1,5 +1,5 @@
 /* 遊戲舞台：canvas 與疊在上面的 HUD、技能列、覆蓋層 */
-.stage{position:relative;width:100%;max-width:min(900px,max(440px,calc(100vh - 285px)));margin:0 auto;aspect-ratio:1/1;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0c0b09;user-select:none;-webkit-user-select:none}
+.stage{position:relative;width:100%;max-width:min(900px,max(440px,calc(100vh - 285px)));margin:0 auto;aspect-ratio:1/1;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--panel-2);user-select:none;-webkit-user-select:none}
 /* 技能列放在場地下方另一條（不蓋到場地）：舞台的內容區維持正方形給 canvas，下方加一條技能列的高度 */
 .stage{box-sizing:content-box;padding-bottom:var(--barh);width:calc(100% - 2px)}
 .stage{--barh:74px}
@@ -35,7 +35,7 @@ body.mobile .stage{--barh:0px}
 @keyframes urgent{50%{box-shadow:0 0 0 3px #ff5d6c,0 0 18px #ff5d6c}}
 @media (prefers-reduced-motion:reduce){.ico.urgent b{animation:none}}
 /* 回放 */
-.replay{left:50%;bottom:12px;transform:translateX(-50%);width:min(90%,460px);background:rgba(16,15,12,.88);border:1px solid var(--accent);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
+.replay{left:50%;bottom:12px;transform:translateX(-50%);width:min(90%,460px);background:rgba(247,248,250,.95);box-shadow:0 4px 16px rgba(0,0,0,.35);border:1px solid var(--accent);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
 .rphead{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
 .rphead span{color:var(--muted);font-variant-numeric:tabular-nums}
 .rpbar{height:6px;border-radius:3px;background:var(--panel-2);overflow:hidden}
@@ -50,13 +50,13 @@ body.mobile .stage{--barh:0px}
 .toast{bottom:calc(var(--barh) + 10px);left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px}
 .toast div{background:rgba(70,14,26,.86);border:1px solid var(--ng);color:#ffd4d9;font-weight:700;font-size:13px;border-radius:8px;padding:3px 10px;white-space:nowrap}
 .bar{bottom:9px;left:50%;transform:translateX(-50%);display:flex;gap:6px;pointer-events:auto}
-.slot{position:relative;width:56px;height:56px;border-radius:10px;border:1px solid #6e6853;background:linear-gradient(#34312a,#1d1b17);color:var(--fg);font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;overflow:hidden}
+.slot{position:relative;width:56px;height:56px;border-radius:10px;border:1px solid var(--line-2);background:linear-gradient(var(--panel),var(--panel-2));color:var(--fg);font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2px;overflow:hidden}
 .slot b{font-size:12px;line-height:1.15;text-align:center}
 .slot kbd{position:absolute;top:2px;left:4px;font-size:10.5px;color:var(--gold-2);font-family:var(--f-body)}
 .slot .cd{position:absolute;inset:0;background:conic-gradient(rgba(0,0,0,.72) var(--p,0%),transparent 0);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fff;text-shadow:0 1px 2px #000}
 .slot.active{box-shadow:0 0 0 2px var(--ok) inset}
 .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(12,11,9,.62);pointer-events:auto}
-.ocard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;width:min(92%,500px);display:flex;flex-direction:column;gap:10px;max-height:92%;overflow:auto}
+.ocard{background:var(--panel);box-shadow:0 8px 28px rgba(0,0,0,.4);border:1px solid var(--line);border-radius:14px;padding:18px 20px;width:min(92%,500px);display:flex;flex-direction:column;gap:10px;max-height:92%;overflow:auto}
 .ocard h2{margin:0;font-family:var(--f-display);font-size:24px}
 .ocard.ok h2{color:var(--ok)} .ocard.ng h2{color:var(--ng)}
 .checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
@@ -64,7 +64,7 @@ body.mobile .stage{--barh:0px}
 .checks li::before{content:"";flex:none;width:10px;height:10px;border-radius:50%;margin-top:6px;background:var(--ok)}
 .checks li.ng::before{background:var(--ng)} .checks li.warn::before{background:var(--gold)}
 .checks .tg{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-.count{font-family:var(--f-display);font-size:96px;color:var(--gold-2);text-shadow:0 4px 18px #000}
+.count{font-family:var(--f-display);font-size:96px;color:#f4f6f8;text-shadow:0 4px 18px #000}
 /* 隨機練習：機制勾選樹（全選 → 階段 → 單一機制） */
 .mtree{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;max-height:240px;overflow:auto;font-size:13.5px}
 .mtree label{display:flex;align-items:center;gap:6px;cursor:pointer}
@@ -75,7 +75,7 @@ body.mobile .stage{--barh:0px}
 /* 開局卡片：兩種開始方式 */
 .starts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 @media (max-width:560px){.starts{grid-template-columns:minmax(0,1fr)}}
-.startbtn{font:inherit;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:12px;border:1px solid var(--gold);background:var(--gold);color:#2b2924}
+.startbtn{font:inherit;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:12px;border:1px solid var(--gold);background:var(--gold);color:var(--on-gold)}
 .startbtn b{font-size:17px}
 .startbtn span{font-size:12.5px;line-height:1.4;opacity:.85}
 .startbtn[data-mode="continue"],.startbtn[data-demo]{background:transparent;color:var(--fg);border-color:var(--line)}
