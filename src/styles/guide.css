@@ -6,14 +6,14 @@
 .ggroup p{margin:0 0 2px;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-2)}
 .gitem{font-size:13.5px;color:var(--fg);text-decoration:none;border:1px solid transparent;border-radius:8px;padding:4px 10px}
 .gitem:hover{background:var(--panel-2)}
-.gitem.on{background:#3a372e;border-color:var(--gold);font-weight:700}
+.gitem.on{background:var(--sel);border-color:var(--gold);font-weight:700}
 .gitem.dim{opacity:.5}
 .gitem:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .gsel{display:none;font:inherit;font-size:15px;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:6px 10px;margin-left:auto}
 .gbody{display:flex;flex-direction:column;gap:16px;min-width:0}
 .gphase{margin:10px 0 0;font-family:var(--f-display);font-size:24px;color:var(--gold)}
 .gsec{scroll-margin-top:64px}
-.gsec.playing{border-color:rgba(218,212,187,.55)}
+.gsec.playing{border-color:var(--gold)}
 .ghead{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
 .ghead h2{margin:0;font-family:var(--f-display);font-size:21px}
 .gwhy{color:var(--gold-2)}
@@ -47,7 +47,7 @@
 .gvinfo{display:flex;flex-direction:column;gap:6px}
 .gvopt{display:flex;flex-direction:column;gap:3px;border:1px solid transparent;border-radius:8px;padding:5px 8px}
 .gvopt>b{font-size:13px;color:var(--gold-2)}
-.gvopt.sel{border-color:var(--gold);background:#3a372e}
+.gvopt.sel{border-color:var(--gold);background:var(--sel)}
 .gmigo{margin-top:6px}
 .gtext{display:flex;flex-direction:column;gap:10px;min-width:0}
 .gtext .btext{font-size:14px}

@@ -1,5 +1,5 @@
 /* 設定視窗與技能列編輯 */
-.modal{position:fixed;inset:0;background:rgba(8,8,6,.7);display:flex;align-items:center;justify-content:center;z-index:10;padding:16px}
+.modal{position:fixed;inset:0;background:rgba(30,34,40,.45);display:flex;align-items:center;justify-content:center;z-index:10;padding:16px}
 .mcard{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;width:min(100%,740px);max-height:90vh;overflow:auto;display:flex;flex-direction:column;gap:12px}
 .mcard h2{margin:0;font-family:var(--f-display);font-size:22px}
 .set{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
@@ -9,6 +9,6 @@
 .act{background:var(--panel-2);border-radius:10px;padding:8px}
 .acth{font-size:11.5px;color:var(--muted);padding:0 8px}
 @media (max-width:640px){.act{grid-template-columns:1fr 1fr 1fr}.acth{display:none}}
-.act input,.act select{font:inherit;font-size:13px;background:#161511;color:var(--fg);border:1px solid var(--line);border-radius:7px;padding:4px 6px;width:100%;min-width:0}
-.act .keycap{font:inherit;font-size:13px;background:#161511;border:1px dashed var(--gold);color:var(--gold-2);border-radius:7px;padding:4px 6px;cursor:pointer}
-.act .keycap.wait{background:var(--gold);color:#2b2924}
+.act input,.act select{font:inherit;font-size:13px;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:7px;padding:4px 6px;width:100%;min-width:0}
+.act .keycap{font:inherit;font-size:13px;background:var(--panel);border:1px dashed var(--gold);color:var(--gold-2);border-radius:7px;padding:4px 6px;cursor:pointer}
+.act .keycap.wait{background:var(--gold);color:var(--on-gold)}

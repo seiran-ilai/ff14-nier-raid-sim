@@ -1,10 +1,18 @@
-/* 色票、字體與全域基礎樣式：尼爾（YoRHa）米色系 */
+/* 色票、字體與全域基礎樣式：灰白銀淺色系（頁面淺底深字） */
 :root{
-  --bg:#1a1916; --panel:#23211d; --panel-2:#2e2b25; --line:#4a463c; --fg:#ece6d0; --muted:#a8a28c;
-  --gold:#dad4bb; --gold-2:#f1ecd8; --accent:#cdb87a; --ok:#43df9f; --ng:#ff5d6c; --blue:#5cc8ff;
+  --bg:#e9ebee; --panel:#f7f8fa; --panel-2:#dfe2e6; --line:#bcc1c8; --line-2:#9aa0a9; --fg:#1f2329; --muted:#59606a;
+  --gold:#3b4049; --gold-2:#262a30; --accent:#59616c; --on-gold:#f4f6f8; --sel:#d2d6dc;
+  --ok:#1b8455; --ng:#c4313f; --blue:#2a78b8;
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
   --f-display:"Noto Serif TC","Songti TC",serif;
-  color-scheme:dark;
+  color-scheme:light;
+}
+/* 遊戲畫面（舞台、教學動態圖）維持深色：場地與 AOE 是畫在深底上的 */
+.stage,.gstage{
+  --bg:#1a1916; --panel:#23211d; --panel-2:#2e2b25; --line:#4a463c; --line-2:#6e6853; --fg:#ece6d0; --muted:#a8a28c;
+  --gold:#dad4bb; --gold-2:#f1ecd8; --accent:#cdb87a; --on-gold:#2b2924; --sel:#3a372e;
+  --ok:#43df9f; --ng:#ff5d6c; --blue:#5cc8ff;
+  color-scheme:dark; color:var(--fg);
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
