@@ -80,8 +80,7 @@ body.mobile .stage{--barh:0px}
 .startbtn span{font-size:12.5px;line-height:1.4;opacity:.85}
 .startbtn[data-mode="continue"],.startbtn[data-demo]{background:transparent;color:var(--fg);border-color:var(--line)}
 .startbtn:hover{filter:brightness(1.08)}
-.startbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.mtree label.dim{opacity:.45}
+.startbtn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* 雙王時詠唱條顯示是誰在詠唱 */
 .castname small{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--gold-2)}
 .castname small:empty{display:none}

@@ -1,12 +1,11 @@
-// 上方：隊伍、職能、副本 → 練習方式 → 王 → 練習項目；右側：本項目紀錄、最常錯的機制
-import { ALS, ROLES, type Alliance, type Role } from '../core/constants';
+// 上方：副本 → 練習方式 → 王 → 練習項目；右側：本項目紀錄、最常錯的機制
 import { saveConfig, type PickMode } from '../core/config';
 import { RAIDS, raidById } from '../raids';
 import type { Raid } from '../raids/types';
-import { ALL_DRILLS, SINGLES, encMain, getDrill, randKey, singleForMech } from '../drills';
+import { SINGLES, encMain, getDrill, randKey, singleForMech } from '../drills';
 import type { Session } from '../game/session';
 import { getDrillStat, worstMechs, clearMechStats } from '../game/stats';
-import { $, seg } from './dom';
+import { $ } from './dom';
 
 export function renderStats(session: Session): void {
   const s = getDrillStat(session.cfg.drill);
@@ -51,12 +50,8 @@ const selEnc = (raid: Raid, id: string) => raid.encounters.find((e) => e.id === 
 
 export function renderTop(session: Session): void {
   const cfg = session.cfg;
-  const cur = getDrill(cfg.drill);
   const raid = selRaid(session), enc = selEnc(raid, cfg.enc);
   const mode = modeOf(cfg.drill);
-  seg($('alSeg'), ALS, cfg.al, (v) => { cfg.al = v as Alliance; saveConfig(cfg); renderTop(session); session.newGame(); });
-  seg($('roleSeg'), ROLES, cfg.role, (v) => { cfg.role = v as Role; saveConfig(cfg); renderTop(session); session.newGame(); });
-  $('seatInfo').textContent = cur.enc.seatText?.(cfg.al, cfg.role) ?? `${cfg.al} 隊 ${cfg.role}`;
   const row = (label: string, items: string): string => `<span class="lbl">${label}</span><div class="items">${items}</div>`;
 
   $('raidRow').innerHTML = row('副本', RAIDS.map((r) =>
@@ -70,11 +65,8 @@ export function renderTop(session: Session): void {
   $('drillsMode').innerHTML = row('練習方式', `<div class="modeseg" role="radiogroup">${MODES.map(([m, name, tip]) =>
     `<button class="modebtn" role="radio" data-mode="${m}" aria-checked="${m === mode}" title="${tip}">${name}</button>`).join('')}</div>`);
 
-  const btn = (key: string, label: string, sub: string, tl = false): string => {
-    const r = ALL_DRILLS.find((d) => d.key === key);
-    const why = r?.enc.unrelated?.(r.id, cfg.al, cfg.role);
-    return `<button class="drill${tl ? ' tl' : ''}${why ? ' dim' : ''}" data-k="${key}" aria-pressed="${key === cfg.drill}" title="${why ? `跟你的座位無關：${why}` : sub}">${label}</button>`;
-  };
+  const btn = (key: string, label: string, sub: string, tl = false): string =>
+    `<button class="drill${tl ? ' tl' : ''}" data-k="${key}" aria-pressed="${key === cfg.drill}" title="${sub}">${label}</button>`;
   if (!raid.encounters.length) {
     $('drillsEnc').innerHTML = row('王', `<span class="muted rowhint">${raid.short}「${raid.name}」${raid.note ?? '資料準備中。'}</span>`);
     $('drillsOne').innerHTML = '';

@@ -41,9 +41,9 @@ function drawMarker(c: CanvasRenderingContext2D, e: Entity, x: number, y: number
   if (m.label && m.kind !== 'num') text(c, m.label, x, hy - 1.1, 11, '#ffe6a3', 700);
 }
 
-export function drawEnt(c: CanvasRenderingContext2D, e: Entity, G: RenderState, alpha: number): void {
+export function drawEnt(c: CanvasRenderingContext2D, e: Entity, G: RenderState, alpha: number, mark = true): void {
   const x = lerp(e.px, e.x, alpha), y = lerp(e.py, e.y, alpha), face = lerpAng(e.pface, e.face, alpha);
-  const me = e.isPlayer;
+  const me = e.isPlayer && mark;
   const col = ROLE_COL[roleType(e.role)];
   const r = me ? 0.9 : 0.62;
   const stone = e.stun > G.t && e.stunKind === 'stone';

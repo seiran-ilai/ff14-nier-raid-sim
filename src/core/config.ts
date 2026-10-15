@@ -41,6 +41,7 @@ export interface Config {
   hideSides: boolean;
   sound: boolean;
   acts: ActionConfig[];
+  /** 玩家操控的角色：介面不給選（坦補 D 的差別寫在機制說明），固定 A 隊 DPS；測試與除錯網址可以改 */
   al: Alliance;
   role: Role;
   /** 目前的練習項目 key（見 drills/index.ts） */
@@ -79,6 +80,8 @@ export function loadConfig(): Config {
   // 舊版截圖網址可能把速度存成 0：讀到不合理的值就用預設
   if (!(typeof cfg.speed === 'number' && cfg.speed > 0)) cfg.speed = d.speed;
   if (!Array.isArray(cfg.acts)) cfg.acts = d.acts;
+  // 舊版可以選隊伍、職能：存的座位不再沿用
+  cfg.al = d.al; cfg.role = d.role;
   return cfg;
 }
 

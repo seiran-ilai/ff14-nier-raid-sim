@@ -16,6 +16,8 @@ export interface DrawOpts {
   noHints?: boolean;
   /** 滑鼠點的目的地 */
   moveTo?: { x: number; y: number } | null;
+  /** 不特別標出玩家（教學頁：全員照攻略跑，沒有「你」） */
+  noYou?: boolean;
 }
 
 export function draw(G: RenderState | null, cfg: Config, opts: DrawOpts = {}): void {
@@ -48,7 +50,7 @@ export function draw(G: RenderState | null, cfg: Config, opts: DrawOpts = {}): v
   G.bosses.forEach((b) => drawBoss(c, b, alpha));
   G.fx.forEach((f) => { if (f.k !== 'flash') drawFx(c, f, G); });
   G.ents.filter((e) => !e.isPlayer && !e.away).forEach((e) => drawEnt(c, e, G, alpha));
-  drawEnt(c, P, G, alpha);
+  drawEnt(c, P, G, alpha, !opts.noYou);
   G.enc.draw?.(c, G, 'top');
   if (opts.fix) drawFix(c, opts.fix);
   if (opts.moveTo) {

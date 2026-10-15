@@ -13,7 +13,7 @@ export function renderBrief(session: Session): void {
   let h = `<h3>${rand ? '隨機練習' : `${raid.short}・${raid.name}`}</h3><h4>${D.name}</h4>`;
   if (!rand && !session.cfg.drill.startsWith('cont:')) h += `<p class="muted">${enc.name}・${D.sub}</p>`;
   if (D.brief) h += `<div class="btext" id="bText">${D.brief}</div><button class="linkbtn" id="bMore" hidden>看完整流程</button>`;
-  if (rand) h += randPanelHtml(rand, session.cfg);
+  if (rand) h += randPanelHtml(rand);
   // 機制說明：效果 → 預兆 → 應對。單一機制直接展開；時間軸收起來，點名稱展開
   const info = (D.info ?? []).filter((n) => findInfo(n, enc));
   if (info.length) {

@@ -6,16 +6,13 @@ import type { Session } from '../game/session';
 import { seg } from './dom';
 import { pickDrill } from './topbar';
 
-export function randPanelHtml(o: RandOpts, cfg: Config): string {
+export function randPanelHtml(o: RandOpts): string {
   const on = new Set(o.ids);
   const groups = RAIDS.flatMap((raid) => raid.encounters.map((enc) => {
     const g = `${raid.id}/${enc.id}`, items = SINGLES.filter((d) => d.raid === raid && d.enc === enc);
     if (!items.length) return '';
     return `<div class="mgroup" data-g="${g}"><label class="mph"><input type="checkbox" data-ph="${g}"> ${raid.short}・${enc.name}</label>
-      <div class="mitems">${items.map((d) => {
-        const why = enc.unrelated?.(d.id, cfg.al, cfg.role);
-        return `<label${why ? ` class="dim" title="${why}"` : ''}><input type="checkbox" data-id="${d.key}" ${on.has(d.key) ? 'checked' : ''}> ${d.drill.name}</label>`;
-      }).join('')}</div></div>`;
+      <div class="mitems">${items.map((d) => `<label><input type="checkbox" data-id="${d.key}" ${on.has(d.key) ? 'checked' : ''}> ${d.drill.name}</label>`).join('')}</div></div>`;
   })).join('');
   return `<div class="set"><span class="lbl">重複</span><span class="grp" id="rRep"></span></div>
     <div class="set"><span class="lbl">時間</span><span class="grp" id="rMins"></span></div>

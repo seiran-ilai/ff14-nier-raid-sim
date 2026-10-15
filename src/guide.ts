@@ -1,10 +1,9 @@
 // 機制教學頁：一整頁往下捲，副本 → 王 → 每個練習項目一段：動態圖＋效果／預兆／應對（全部展開）。
 // 左側（手機是下拉選單）是索引。動態圖直接跑模擬器的教學示範（同一套機制與照攻略站位的 Bot），
-// 黃色「你」是選的座位。同一時間只播放畫面中的那一段。
+// 全員照攻略跑、不標「你」；坦補 D 的差別寫在機制說明。同一時間只播放畫面中的那一段。
 import './styles/tokens.css';
 import './styles/layout.css';
 import './styles/guide.css';
-import { ALS, ROLES, type Alliance, type Role } from './core/constants';
 import { defaultConfig, loadConfig, saveConfig } from './core/config';
 import { fmtT } from './core/format';
 import { RAIDS } from './raids';
@@ -21,10 +20,9 @@ const KEYS = ALL_DRILLS.map((d) => d.key);
 const SPEEDS = [0.5, 1, 2, 4];
 const sid = (k: string): string => `k-${k.replace(/\//g, '-')}`;
 
-// 教學頁用自己的設定（不存檔）：座位沿用模擬器上次選的，鏡頭固定、提示全開；
+// 教學頁用自己的設定（不存檔）：鏡頭固定、提示全開；
 // 文字說明不畫在場地上，改在動態圖上下的文字列
-const saved = loadConfig();
-const cfg = { ...defaultConfig(), al: saved.al, role: saved.role, cam: 'fixed' as const, hint: true, text: false };
+const cfg = { ...defaultConfig(), cam: 'fixed' as const, hint: true, text: false };
 const session = new Session(cfg, newInput(), false);
 let active = '';
 const seed = 1;
@@ -91,7 +89,7 @@ const mechCard = (n: string, r: DrillRef): string =>
 function sectionHtml(r: DrillRef): string {
   const D = r.drill, info = D.info ?? [];
   return `<section class="gsec card" id="${sid(r.key)}" data-k="${r.key}">
-    <div class="ghead"><h2>${D.name}</h2><span class="muted">${r.enc.name}・${D.sub}</span><span class="gwhy muted"></span></div>
+    <div class="ghead"><h2>${D.name}</h2><span class="muted">${r.enc.name}・${D.sub}</span></div>
     <div class="gcols">
       <div class="gplayer">
         <div class="gstage" title="點畫面暫停／播放"><canvas class="gcv"></canvas>
@@ -124,17 +122,6 @@ function renderPage(): void {
     + pending.map((raid) => `<h2 class="gphase">${raid.short}・${raid.name}</h2><p class="muted">${raid.note ?? '資料準備中。'}</p>`).join('');
 }
 
-function renderSeat(): void {
-  seg($('alSeg'), ALS, cfg.al, (v) => { cfg.al = v as Alliance; renderSeat(); restart(); });
-  seg($('roleSeg'), ROLES, cfg.role, (v) => { cfg.role = v as Role; renderSeat(); restart(); });
-  $('seatInfo').textContent = `${cfg.al} 隊 ${cfg.role}`;
-  $('gnote').textContent = `動態圖中黃色「你」＝ ${cfg.al} 隊 ${cfg.role}`;
-  KEYS.forEach((k) => {
-    const r = drillRef(k)!, why = r.enc.unrelated?.(r.id, cfg.al, cfg.role);
-    q(k, 'gwhy').textContent = why ? `・你的座位：${why}` : '';
-    document.querySelector(`#gnav [data-k="${k}"]`)?.classList.toggle('dim', !!why);
-  });
-}
 
 function jump(k: string): void {
   sec(k).scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -168,14 +155,13 @@ function frame(now: number): void {
     if (G.state === 'end') { endWait += real; if (endWait > 2) restart(); }
     else session.advance(real * speed);
   }
-  draw(session.G, cfg, { alpha: session.alpha });
+  draw(session.G, cfg, { alpha: session.alpha, noYou: true });
   updCaption();
   requestAnimationFrame(frame);
 }
 
 renderPage();
 KEYS.forEach(renderVariants);
-renderSeat();
 const renderSpeed = (): void => seg($('gSpeed'), SPEEDS, speed, (v) => { speed = +v; renderSpeed(); }, (v) => `${v}x`);
 renderSpeed();
 
@@ -194,11 +180,11 @@ $('gbody').onclick = (e) => {
     if (k !== active) { activate(k); playing = true; } else playing = !playing;
     return;
   }
-  // 到模擬器練這個：帶著座位與練習項目回到模擬器
+  // 到模擬器練這個：帶著練習項目回到模擬器
   const go = t.closest<HTMLElement>('[data-go]');
   if (go) {
     const c = loadConfig(), r = drillRef(go.dataset.go!);
-    Object.assign(c, { drill: go.dataset.go!, al: cfg.al, role: cfg.role, pick: 'one' }, r ? { raid: r.raid.id, enc: r.enc.id } : {});
+    Object.assign(c, { drill: go.dataset.go!, pick: 'one' }, r ? { raid: r.raid.id, enc: r.enc.id } : {});
     saveConfig(c);
     location.href = './index.html';
     return;

@@ -20,8 +20,12 @@ export interface MechInfo {
   effect: string;
   /** 預兆：看什麼來判斷（動作、特效、台詞、點名標記） */
   tell: string;
-  /** 應對方式（攻略處理） */
+  /** 應對方式（攻略處理）；要分隊處理的（多個王、各隊不同位置）在這裡寫 A／B／C 隊各做什麼 */
   how: string;
+  /** 坦克／補師／DPS 各自要注意的（沒有特別要注意的就不寫） */
+  tank?: string;
+  heal?: string;
+  dps?: string;
 }
 
 /** 有多種樣式的機制：教學頁可以指定樣式播放（state.ts 的 variant） */
@@ -56,10 +60,7 @@ export interface Encounter {
   loot?: Loot;
   /** 額外繪製（場地圖案、王的手勢等）；floor 畫在預兆底下、top 畫在角色上面 */
   draw?(c: CanvasRenderingContext2D, G: RenderState, layer: 'floor' | 'top'): void;
-  /** 座位說明（顯示在職能旁邊） */
-  seatText?(al: Alliance, role: Role): string;
-  /** 練習項目跟座位無關的話回傳原因（按鈕變淡） */
-  unrelated?(drill: string, al: Alliance, role: Role): string | null;
+
 }
 
 export interface Source { label: string; url: string }

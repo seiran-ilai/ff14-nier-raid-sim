@@ -26,10 +26,6 @@ a.btn{text-decoration:none;display:inline-block}
 .modebtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .rowhint{padding-top:7px}
 .drills .items{display:flex;gap:6px;flex-wrap:wrap;align-items:stretch}
-/* 跟座位無關的機制：變淡但可以點 */
-.drill.dim{opacity:.42}
-.drill.dim:hover{opacity:.8}
-.seatinfo{font-size:12.5px;color:var(--gold-2);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:3px 9px}
 .drill{font:inherit;font-size:14px;font-weight:700;cursor:pointer;background:var(--panel);border:1px solid var(--line);color:var(--fg);border-radius:9px;padding:6px 12px;line-height:1.3}
 .drill:hover{border-color:var(--accent)}
 .drill.tl{border-color:var(--line-2)}
@@ -147,6 +143,10 @@ details.mi[open] summary{color:var(--gold-2);margin-bottom:4px}
 .midl dt.effect{background:var(--sel);color:var(--fg)}
 .midl dt.tell{background:rgba(42,120,184,.14);color:#1d5a8c}
 .midl dt.how{background:rgba(27,132,85,.14);color:var(--ok)}
+/* 坦補 D 注意事項：職能色 */
+.midl dt.tank{background:rgba(79,127,242,.15);color:#2f56b0}
+.midl dt.heal{background:rgba(60,186,106,.17);color:#1d7040}
+.midl dt.dps{background:rgba(214,84,84,.15);color:#a83434}
 .howto{display:flex;flex-direction:column;gap:6px;font-size:13.5px}
 .linkbtn{all:unset;cursor:pointer;font-size:13px;color:var(--accent);align-self:flex-start}
 .linkbtn:hover{text-decoration:underline}

@@ -1,10 +1,10 @@
 /*
  * 尼爾 1 複製工廠廢墟・第二王：霍布斯
- * A／B／C 三隊被分到三個平臺（各自有地板機關），北邊是會旋轉切換機關的牆。模擬器只模擬「你那一隊」的平臺，
+ * A／B／C 三隊被分到三個平臺（各自有地板機關），北邊是會旋轉切換機關的牆。模擬器只畫 A 隊的平臺（牆面機制三隊相同；地板機關隨機出三隊其中一種），
  * 其他兩隊不在畫面上（Entity.away）。資料：灰機 wiki（機制）＋ 新大陸見聞錄（處理方式：所有人在場地右前方集合）。
  * 平臺大小、詠唱秒數、AOE 大小、時間軸順序全部是估計（T）。
  */
-import { ROLES, type Alliance, type Role, type Vec } from '../../core/constants';
+import { ALS, ROLES, type Alliance, type Role, type Vec } from '../../core/constants';
 import { squareArena } from '../../core/arena';
 import { angTo, deg, polar, DIR } from '../../core/geometry';
 import type { Shape } from '../../core/shapes';
@@ -199,7 +199,7 @@ type Arm = 'multi' | 'box' | 'fire';
 const armSeg = (G: GameState, t: number, a: Arm): number =>
   a === 'multi' ? multi(G, t) : a === 'box' ? container(G, t) : flame(G, t, G.rng.pickOne<FirePat>(['mid', 'sides', 'left', 'right']));
 
-/** 估計的完整時間軸：三組牆面機制（順序依機械臂位置，這裡隨機）之間穿插環形激光、激光照射，之後依隊伍的地板機關、短途導彈 */
+/** 估計的完整時間軸：三組牆面機制（順序依機械臂位置，這裡隨機）之間穿插環形激光、激光照射，之後地板機關（隨機一隊的）、短途導彈 */
 function fullSeg(G: GameState, t0: number): number {
   const arms = G.rng.shuffle<Arm>(['multi', 'box', 'fire']);
   let t = laserTest(G, t0);
@@ -209,7 +209,7 @@ function fullSeg(G: GameState, t0: number): number {
   t = laserShot(G, t) + 1.5;
   t = armSeg(G, t, arms[2]) + 1.5;
   at(G, t, () => alertMsg(G, '最終得分大幅超出預測。諸位已被判定為異常個體。', 3));
-  t = floor(G, t + 2, G.player.al) + 1.5;
+  t = floor(G, t + 2, G.rng.pickOne(ALS)) + 1.5;
   t = missiles(G, t) + 1.5;
   return laserTest(G, t);
 }
@@ -224,29 +224,28 @@ export const hobbes: Encounter = {
   bosses: [{ id: 'hob', name: '霍布斯', x: T.boss.x, y: T.boss.y, face: Math.PI, r: 4 }],
   home,
   onEnter(G) { G.ents.forEach((e) => { e.away = e.al !== G.player.al; }); },
-  seatText: (al) => `霍布斯：${al} 隊平臺（${{ A: '電磁脈衝', B: '強制移動', C: '噴油' }[al]}）`,
   info: {
-    耐激光檢測: { effect: '連續多次全場 AOE。', tell: '霍布斯詠唱「耐激光檢測」。', how: '有點痛：開減傷，補師注意抬血。' },
+    耐激光檢測: { effect: '連續多次全場 AOE。', tell: '霍布斯詠唱「耐激光檢測」。', how: '有點痛：開減傷，補師注意抬血。', tank: '有團隊減傷就在這裡開。', heal: '連續多段全場傷害：讀條時先上群盾，段與段之間持續群補。' },
     多重攻擊檢測: { effect: '中央先放一次圓形 AOE，之後中央變成帶電區域；接著中央出現三爪機械爪，產生 3 個扇形 AOE，依方向旋轉，重複三次。被打中附加 15 秒物理受傷加重。', tell: '對話框「墻面的<b>右臂</b>開始運作……」；中央出現藍圈，中央箭頭顯示旋轉方向。', how: '離開中央；三爪扇形<b>照中央箭頭的旋轉方向</b>跟著轉，站在扇形之間。' },
-    集裝箱: { effect: '多爪機械爪抓起集裝箱砸在中央（塌方，距離衰減）；箱壁往四個方向倒下（崩塌，高傷害）；散開後出現四個小型自爆，隨機連線四名玩家，數秒後衝過去放小範圍高傷 AOE（自爆攻擊）。', tell: '對話框「墻面的<b>左臂</b>開始運作……」；中央出現集裝箱。', how: '所有人在<b>場地右前方（斜角）</b>躲倒下的箱壁；之後被連線的人離開人群吃自爆（攻略：坦克一人接兩條線）。' },
-    耐火焰檢測: { effect: '場地後方 8 個噴頭點火，持續攻擊場地：中間、兩側、左側、右側四種。每被打中一次疊一層火傷。', tell: '對話框「墻面的<b>火炎放射器</b>開始運作……」；看背後（北牆）噴頭哪幾個點火。', how: '回頭看牆，<b>往沒有點火的方向躲</b>（兩側放射是 ∧ 形）。' },
+    集裝箱: { effect: '多爪機械爪抓起集裝箱砸在中央（塌方，距離衰減）；箱壁往四個方向倒下（崩塌，高傷害）；散開後出現四個小型自爆，隨機連線四名玩家，數秒後衝過去放小範圍高傷 AOE（自爆攻擊）。', tell: '對話框「墻面的<b>左臂</b>開始運作……」；中央出現集裝箱。', how: '所有人在<b>場地右前方（斜角）</b>躲倒下的箱壁；之後被連線的人離開人群吃自爆（攻略：坦克一人接兩條線）。', tank: '攻略：坦克一人接兩條自爆連線，開減傷、離開人群吃。', heal: '自爆傷害高：先抬接線的人（坦克）。' },
+    耐火焰檢測: { effect: '場地後方 8 個噴頭點火，持續攻擊場地：中間、兩側、左側、右側四種。每被打中一次疊一層火傷。', tell: '對話框「墻面的<b>火炎放射器</b>開始運作……」；看背後（北牆）噴頭哪幾個點火。', how: '回頭看牆，<b>往沒有點火的方向躲</b>（兩側放射是 ∧ 形）。', heal: '每被打中一次疊一層火傷：有人中招要多補。' },
     環形激光: { effect: '從場地外側往內側的步進式環形 AOE，打中附加 40 秒魔法受傷加重。', tell: '詠唱「環形激光」；提示和一般 AOE 不同，速度很慢。', how: '躲完第一圈之後<b>往外走</b>（到已經炸過的外圈），避開後面幾段。' },
-    激光照射: { effect: '點名每隊一名補師，放需要分攤的直線 AOE。', tell: '補師被點名，霍布斯朝他打直線。', how: '全隊站到<b>被點名的補師身後</b>，一起分攤。' },
+    激光照射: { effect: '點名每隊一名補師，放需要分攤的直線 AOE。', tell: '補師被點名，霍布斯朝他打直線。', how: '全隊站到<b>被點名的補師身後</b>，一起分攤。', heal: '被點名的是補師：站定不要亂跑，讓全隊到你身後分攤。', dps: '到被點名的補師身後一起分攤。' },
     電磁脈衝攻擊: { effect: '<b>A 隊平臺</b>：地板上間隔的直條發紅光，一段時間後打發光的區域，附加感電。', tell: '對話框「地板下的機械生物動作很可疑……」；地板直條發紅光。', how: '站到<b>沒發光</b>的直條。' },
     強制移動: { effect: '<b>B 隊平臺</b>：場邊變成帶電區域（進去疊受傷加重）；地面滾軸出現左或右箭頭，讀條完成後把玩家往箭頭方向移動約半個場地（不造成傷害）。', tell: '對話框「地面上的滾軸開始運作……」；滾軸上出現方向箭頭。', how: '先站到<b>箭頭的反方向那半邊</b>，被送過去後不會碰到帶電的場邊。' },
     噴油: { effect: '<b>C 隊平臺</b>：連續兩次從地面黃色範圍噴熱油，打中會擊飛並上「油」（移動變慢、火屬性受傷大增）。', tell: '對話框「地板下開始充滿可燃性液體……」；地面出現黃色範圍。', how: '躲開黃色範圍，兩次都要躲。' },
-    短途導彈: { effect: '每個平臺點名 4 名 DPS，放大範圍火屬性 AOE。', tell: 'DPS 頭上出現點名。', how: '被點名的人<b>各自跑到四個角落</b>，其他人留在中間。' },
+    短途導彈: { effect: '每個平臺點名 4 名 DPS，放大範圍火屬性 AOE。', tell: 'DPS 頭上出現點名。', how: '被點名的人<b>各自跑到四個角落</b>，其他人留在中間。', tank: '不會被點：留在中間。', heal: '不會被點：留在中間，注意跑到角落的 DPS 血量。', dps: '只點 DPS（每個平臺 4 人）：被點到就跑到自己的角落，四人各佔一角。' },
   },
   drills: {
-    full: drill({ tl: true, name: '完整時間軸', sub: '你那一隊的平臺', brief: flowHtml(['耐激光檢測', '牆面機制 ×3（右臂／左臂／火炎放射器，順序隨機），中間穿插環形激光、激光照射', '「諸位已被判定為異常個體」→ 你那隊的地板機關', '短途導彈', '耐激光檢測']) + '<p class="bnote">三隊各在自己的平臺，只模擬你那隊；地板機關依上方選的隊伍（A／B／C）。順序為估計。</p>', info: ALL, seg: fullSeg }),
+    full: drill({ tl: true, name: '完整時間軸', sub: 'A 隊平臺', brief: flowHtml(['耐激光檢測', '牆面機制 ×3（右臂／左臂／火炎放射器，順序隨機），中間穿插環形激光、激光照射', '「諸位已被判定為異常個體」→ 地板機關（隨機出 A／B／C 其中一種）', '短途導彈', '耐激光檢測']) + '<p class="bnote">三隊各在自己的平臺、牆面機制相同，只畫 A 隊平臺；地板機關三隊不同（A 電磁脈衝、B 強制移動、C 噴油），這裡隨機出一種。順序為估計。</p>', info: ALL, seg: fullSeg }),
     multi: drill({ name: '右臂：多重攻擊檢測', sub: '三爪扇形旋轉', brief: '', info: ['多重攻擊檢測'], mechs: ['多重攻擊檢測'], seg: multi }),
     box: drill({ name: '左臂：集裝箱', sub: '塌方・崩塌・自爆', brief: '', info: ['集裝箱'], mechs: ['集裝箱', '自爆攻擊'], seg: container }),
     fire: drill({ name: '耐火焰檢測', sub: '看北牆噴頭', brief: '', info: ['耐火焰檢測'], mechs: ['耐火焰檢測'],
       seg: (G, t0) => flame(G, t0, variant<FirePat>(G, 'fire', G.rng.pickOne<FirePat>(['mid', 'sides', 'left', 'right']))) }),
     ring: drill({ name: '環形激光', sub: '由外往內', brief: '', info: ['環形激光'], mechs: ['環形激光'], seg: ringLaser }),
     laser: drill({ name: '激光照射', sub: '補師直線分攤', brief: '', info: ['激光照射'], mechs: ['激光照射'], seg: laserShot }),
-    floor: drill({ name: '地板機關', sub: '依你的隊伍', brief: 'A 隊：電磁脈衝攻擊；B 隊：強制移動；C 隊：噴油。', info: ['電磁脈衝攻擊', '強制移動', '噴油'], mechs: ['電磁脈衝攻擊', '強制移動', '噴油'],
-      seg: (G, t0) => floor(G, t0, variant<Alliance>(G, 'floor', G.player.al)) }),
+    floor: drill({ name: '地板機關', sub: '三隊各不同', brief: 'A 隊：電磁脈衝攻擊；B 隊：強制移動；C 隊：噴油。單練時隨機出一種，教學頁可以切換。', info: ['電磁脈衝攻擊', '強制移動', '噴油'], mechs: ['電磁脈衝攻擊', '強制移動', '噴油'],
+      seg: (G, t0) => floor(G, t0, variant<Alliance>(G, 'floor', G.rng.pickOne(ALS))) }),
     missile: drill({ name: '短途導彈', sub: 'DPS 點名分散', brief: '', info: ['短途導彈'], mechs: ['短途導彈'], seg: missiles }),
   },
   variants: {

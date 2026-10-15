@@ -7,7 +7,6 @@
 .gitem{font-size:13.5px;color:var(--fg);text-decoration:none;border:1px solid transparent;border-radius:8px;padding:4px 10px}
 .gitem:hover{background:var(--panel-2)}
 .gitem.on{background:var(--sel);border-color:var(--gold);font-weight:700}
-.gitem.dim{opacity:.5}
 .gitem:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .gsel{display:none;font:inherit;font-size:15px;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:9px;padding:6px 10px;margin-left:auto}
 .gbody{display:flex;flex-direction:column;gap:16px;min-width:0}
